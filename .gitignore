@@ -1,0 +1,8 @@
+# Artifacts from the assembler
+*.hex
+*.lst
+
+# Artifacts from latex
+*.pdf
+*.aux
+*.log
