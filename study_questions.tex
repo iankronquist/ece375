@@ -1,0 +1,91 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 1\\[1cm]
+    }
+    {\large
+        Introduction to AVR Tools
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Introduction}
+Most of the labs you do will have study questions that are to be answered within your lab write-up.  This lab’s study questions are given below and will be due at the start of lab next week. Although you will be exposed to some information that has not been covered in class, keep in mind that as a student accepted into pro school you will need to get into the habit of being pro-active.  This involves reading ahead and preparing yourself before going to lab or class.  
+
+\section{Additional Questions}
+\begin{enumerate}
+    \item Go to the lab webpage and download the template write-up. Read it thoroughly and get familiar with the expected format.  Specifically look at the included source code. What type of font is used? What size is the font?  From here o n when you include your source code in your lab write-up you must adhere to that font type and size .
+    The lab web page also includes a latex template. As opposed to futzing with
+    Microsoft Word I would prefer to just use the template and not have to
+    worry about what font size code samples should be. In any case, it is
+    Courier New, size 8 in the Word document.
+
+    \item Take a look at the code you downloaded for today’s lab. Notice the lines that begin with .def and .equ followed by some type of expression. These are known as pre-compiler directives. Define pre-compiler directive. What is the difference between the .def and .equ directives (HINT: see section 5.1 of the AVR Starter Guide given on the lab webpage).
+    Pre compiler directives are special pseudo-instructions expanded by the
+    compiler into real instructions or expressions.
+
+    $.def$ defines a symbolic name to a register, essentially aliasing
+    the register. For instance, in the program the $7^{th}$ register is given
+    the name $mpr$ for "Multi-Purpose Register".
+    $.equ$ sets a symbol to an expression, essentially creating a small
+    macro. For instance, in the sample program the wait time symbol $WTime$ is
+    set to the expression 100.
+
+    \item Take another look at the code you downloaded for today’s lab. Read the comment that describes the macro definitions. From that explanation determine the 8-bit binary value of the following expressions. Note: the numbers below are decimal values.
+
+    \texttt{
+    \begin{enumerate}
+        \item
+            (1<<2)
+            00000100
+        \item
+            (2<<1)
+            00000100
+        \item
+            (4>>1)
+            00000010
+        \item
+            (1<<4)
+            00010000
+        \item
+            (6>>1|1<<6)
+            01000011
+    \end{enumerate}
+}
+
+\end{enumerate}
+
+\section{Difficulties}
+Completing this lab required compiling AVRDude from source to use the osuisb2
+driver.
+
+\section{Source Code}
+My solution for just week's challenge is just a diff since I'm only changing
+two lines and I would prefer to save paper. This was approved by the TA.
+\begin{verbatim}
+44a45
+> .equ    RWTime = 100                ; Time to wait in wait loop
+157c158
+<         ldi        waitcnt, WTime    ; Wait for 1 second
+---
+>         ldi        waitcnt, RWTime    ; Wait for 2 seconds
+\end{verbatim}
+\end{document}

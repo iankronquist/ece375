@@ -1,0 +1,25 @@
+Most of the labs you do will have study questions that are to be answered within your lab write-up.  This lab’s study questions are given below and will be due at the start of lab next week
+. Although you will be exposed to some information that has not been covered 
+in class, keep in mind that as a student accepted into pro school you will need to get into the habit of being pro-active.  This involves reading ahead and preparing yourself before going to lab or class.
+
+1.  Go to the lab webpage and download the template write-up. Read it thoroughly and get familiar with the expected format.  Specifically look at the included source code. What type of font is used? What size is the font?  From here o n when you include your source code in your lab write-up you must adhere to that font type and size .
+
+2.  Take a look at the code you downloaded for today’s lab. Notice the lines that begin with .def and .equ followed by some type of expression. These are known as pre-compiler directives . Define pre-compiler directive. What is the difference between the .def and .equ directives (HINT: see section 5.1 of the AVR Starter Guide given on the lab webpage).
+
+3.  Take another look at the code you downloaded for today’s lab. Read the comment that describes the macro definitions. From that explanation determine the 8-bit binary value of the following expressions. Note: the numbers below are decimal values.
+
+a.
+(1<<2)
+00000100
+b.
+(2<<1)
+00000100
+c.
+(4>>1)
+00000010
+d.
+(1<<4)
+00010000
+e.
+(6>>1|1<<6)
+01000011
