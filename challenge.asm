@@ -42,7 +42,7 @@
 .def	olcnt = r19				; Outer Loop Counter
 
 .equ	WTime = 100				; Time to wait in wait loop
-.equ	RWTime = 100				; Time to wait in wait loop
+.equ	RWTime = 200				; Time to wait in wait loop
 
 .equ	WskrR = 0				; Right Whisker Input Bit
 .equ	WskrL = 1				; Left Whisker Input Bit
