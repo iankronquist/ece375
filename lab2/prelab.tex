@@ -1,0 +1,54 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 1\\[1cm]
+    }
+    {\large
+        Introduction to AVR Tools
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Prelab}
+Remember—no late prelabs will be accepted.
+Write a pseudo code program for making your TekBot move the way it did in Lab
+1. Your robot should detect objects using its whiskers, reverse, and turn away
+from the object.
+
+\section{Source Code}
+\begin{verbatim}
+Function main:
+    While true:
+        hit_right? =  input from Port D
+        hit_left? =  input from Port D
+        if hit_right:
+            turn_left()
+        else if hit_left:
+            turn_right()
+
+Function turn_left:
+    reverse for one second
+    turn left
+
+Function turn_right:
+    reverse for one second
+    turn right
+\end{verbatim}
+\end{document}
