@@ -82,10 +82,11 @@ My solution for just week's challenge is just a diff since I'm only changing
 two lines and I would prefer to save paper. This was approved by the TA.
 \begin{verbatim}
 44a45
-> .equ    RWTime = 100                ; Time to wait in wait loop
+> .equ  RWTime = 200                ; Time to wait in wait loop
 157c158
-<         ldi        waitcnt, WTime    ; Wait for 1 second
+<       ldi     waitcnt, WTime  ; Wait for 1 second
 ---
->         ldi        waitcnt, RWTime    ; Wait for 2 seconds
+>       ldi     waitcnt, RWTime ; Wait for 2 seconds
+
 \end{verbatim}
 \end{document}
