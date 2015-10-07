@@ -1,0 +1,63 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 1\\[1cm]
+    }
+    {\large
+        Introduction to AVR Tools
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Prelab}
+    turn right
+The answers to the prelab questions can be found in the AVR Starters Guide and
+the AVR Instruction Set.
+\begin{enumerate}
+    \item What is the stack pointer? How is the stack pointer used and how do
+    you initialize it? Provide pseudo-code (NOT actual assembly code) that
+    illustrates how to initialize the stack pointer.\\
+    The stack pointer is a special register which always contains the address
+    of the top of the stack. It is somewhat analogous to the program
+    counter.
+    \item What does the AVR instruction LPM do and how do you use it? Provide
+    pseudo-code that shows how to use the LPM instruction.\\
+    The $LPM$ instruction takes whatever address is in the $Z$ register, and
+    loads it into the provided register. Since program memory is organized into
+    16-bit words, and $LPM$ only loads one byte, the least significant bit of
+    the $Z$ register indicates whether to load the low byte of the 16 bit
+    memory location or the high bit. Optionally, the address in the $Z$
+    register can be incremented.
+    \begin{verbatim}
+    lpm r1, Z ; Loads the value pointed to by the address 
+              ; in the Z register into the r1 register.
+    \end{verbatim}
+    \item Look at the definition file $m128def.inc$. What is contained within
+    this definition file? What are the benefits of using this definition file?
+    How would you include it into your AVR Assembly program?\\
+    The $m128def.inc$ file contains a series of $.equ$ directives which
+    initialize constants used for accessing ports and pins on the board.
+    To include this file you would use the $.include$ directive.
+    \begin{verbatim}
+    .include "./m128def.inc"
+    \end{verbatim}
+\end{enumerate}
+
+\end{document}
