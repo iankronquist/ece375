@@ -28,65 +28,93 @@
 \end{titlepage}
 
 \section{Introduction}
-Most of the labs you do will have study questions that are to be answered within your lab write-up.  This lab’s study questions are given below and will be due at the start of lab next week. Although you will be exposed to some information that has not been covered in class, keep in mind that as a student accepted into pro school you will need to get into the habit of being pro-active.  This involves reading ahead and preparing yourself before going to lab or class.  
+Write a short summary that details what you did and why, explain any problems you may have encountered, and answer the questions below. Your write up and code must be submitted to your TA at the beginning of class the week following the lab. NO LATE WORK IS ACCEPTED.
 
 \section{Additional Questions}
 \begin{enumerate}
-    \item Go to the lab webpage and download the template write-up. Read it thoroughly and get familiar with the expected format.  Specifically look at the included source code. What type of font is used? What size is the font?  From here o n when you include your source code in your lab write-up you must adhere to that font type and size .
-    The lab web page also includes a latex template. As opposed to futzing with
-    Microsoft Word I would prefer to just use the template and not have to
-    worry about what font size code samples should be. In any case, it is
-    Courier New, size 8 in the Word document.
+    \item This lab required you to begin using new tools for compiling and
+    downloading code to your AVR-enabled TekBot using the C language. Explain
+    why it is beneficial to write code in a language that can be ‘cross
+    compiled.’ Also explain some of the problems of writing in this way.\\
 
-    \item Take a look at the code you downloaded for today’s lab. Notice the lines that begin with .def and .equ followed by some type of expression. These are known as pre-compiler directives. Define pre-compiler directive. What is the difference between the .def and .equ directives (HINT: see section 5.1 of the AVR Starter Guide given on the lab webpage).
-    Pre compiler directives are special pseudo-instructions expanded by the
-    compiler into real instructions or expressions.
+    Writing code in a machine independent language is a major advantage for
+    programmers because they can write code once and have it run on many
+    architectures. They no longer have to worry about many of the
+    idiosyncrasies and nuances of a particular board. Code written in a higher
+    level language is also easier to modify and maintain. One disadvantage is
+    that these abstractions are not completely cost-free. For instance, with
+    every function call in C there is a small amount of overhead which can
+    sometimes be elided with handcrafted artisanal assembly.
 
-    $.def$ defines a symbolic name to a register, essentially aliasing
-    the register. For instance, in the program the $7^{th}$ register is given
-    the name $mpr$ for "Multi-Purpose Register".
-    $.equ$ sets a symbol to an expression, essentially creating a small
-    macro. For instance, in the sample program the wait time symbol $WTime$ is
-    set to the expression 100.
+    \item Your program does essentially the same thing as the assembly program
+    you downloaded for Lab 1. Compare the size of the output hex files and
+    explain the differences in size between them.\\
 
-    \item Take another look at the code you downloaded for today’s lab. Read the comment that describes the macro definitions. From that explanation determine the 8-bit binary value of the following expressions. Note: the numbers below are decimal values.
-
-    \texttt{
-    \begin{enumerate}
-        \item
-            (1<<2)
-            00000100
-        \item
-            (2<<1)
-            00000100
-        \item
-            (4>>1)
-            00000010
-        \item
-            (1<<4)
-            00010000
-        \item
-            (6>>1|1<<6)
-            01000011
-    \end{enumerate}
-}
+    The hex file form lab 1 was 472 bytes long. The hex file from lab 2 was 893
+    bytes long. This is a 189\% increase. Part of this can be explained by the
+    fact that the C program was a debug build. The C program also goes to
+    considerable length to set up and maintain the program's stack.
+    Additionally, not all optimizations were turned on. After inspecting the
+    disassembled elf binary produced by the C compiler it looks as though two
+    functions I thought would be inlined were not. The C program also has a
+    number of fun interrupt handling functions.
 
 \end{enumerate}
 
-\section{Difficulties}
-Completing this lab required compiling AVRDude from source to use the osuisb2
-driver.
-
 \section{Source Code}
-My solution for just week's challenge is just a diff since I'm only changing
-two lines and I would prefer to save paper. This was approved by the TA.
 \begin{verbatim}
-44a45
-> .equ  RWTime = 200                ; Time to wait in wait loop
-157c158
-<       ldi     waitcnt, WTime  ; Wait for 1 second
----
->       ldi     waitcnt, RWTime ; Wait for 2 seconds
+/*
+    Challenge:
+    Modify your TekBot so it can move objects across a tabletop. Your TekBot
+    needs to push objects that it touches a short distance. 
+*/
 
+#define F_CPU 16000000
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdio.h>
+
+int main(void)
+{
+    // data direction register. 1 is output. 0 is input.
+    DDRB =  0b11110000;    // Setup Port B for Input/Output
+    DDRD =  0;             // Setup Port D for Input/Output
+    PORTD = 0b11111111;    // Activate pull up resistor
+    PORTB = 0b11110000;    // Turn off both motors
+
+
+    PORTB = 0b01100000;    // Make TekBot move forward
+    while (1) // Loop Forever
+    {
+        // a. TekBot hits object
+        if (left_whisker_hit()) {
+            // b. TekBot continues forwards for a short period of time
+            _delay_ms(500);
+            // c. TekBot backs up slightly
+            PORTB = 0b00000000;
+            // d. TekBot turns slightly towards the object
+            PORTB = 0b00100000;    // Turn Left
+            _delay_ms(1000);
+            PORTB = 0b01100000;    // Make TekBot move forward
+        } else if (right_whisker_hit()) {
+            // b. TekBot continues forwards for a short period of time
+            _delay_ms(500);
+            // c. TekBot backs up slightly
+            PORTB = 0b00000000;
+            // d. TekBot turns slightly towards the object
+            PORTB = 0b01000000;    // Turn Right
+            _delay_ms(1000);
+            PORTB = 0b01100000;    // Make TekBot move forward
+        }
+    }
+}
+
+int left_whisker_hit() {
+    return ~PIND & 2;
+}
+
+int right_whisker_hit() {
+    return ~PIND & 1;
+}
 \end{verbatim}
 \end{document}
