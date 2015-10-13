@@ -1,6 +1,9 @@
 # Artifacts from the assembler
 *.hex
 *.lst
+*.obj
+*.err
+*.cof
 
 # Artifacts from latex
 *.pdf
