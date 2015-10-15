@@ -1,0 +1,70 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 4\\[1cm]
+    }
+    {\large
+        Introduction to AVR Tools
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Prelab}
+    turn right
+The answers to the prelab questions can be found in the AVR Starters Guide and
+the AVR Instruction Set.
+\begin{enumerate}
+    \item For this lab, you will be asked to perform arithmetic operations on numbers that
+are larger than 8-bits. To do this, you should understand the different arithmetic operations supported by the AVR Architecture. List and describe all the different forms of ADD, SUB, and MUL (i.e. ADC, SUBI, MULF, etc.).\\
+\begin{enumerate}
+    \item $ADD$  Add the two registers, and put the result in $Rd$. Do not consult the carry bit.\\
+    \item $ADC$  Add the two registers and the carry bit, and put the result in $Rd$.\\
+    \item $ADIW$ Add a 6 bit constant to a register and carry into the next register. Only works on the upper 4 register pairs.\\
+    \item $SUB$ Subtract the two registers without regard to the carry bit.\\
+    \item $SUBI$ Subtract the value in the instruction from $Rd$.\\
+    \item $SBC$ Subtract the two registers with regard to the carry bit.\\
+    \item $SBCI$ Subtract the value in the instruction from the register with regard to the carry bit.\\
+    \item $SBIW$ Subtract a 6 bit constant to a register and carry into the next register. Only works on the upper 4 register pairs.\\
+    \item $MUL$ Perform unsigned multiplication of the two registers and put the result in registers $R1$ and $R0$.\\
+    \item $MULS$ Perform two's complement signed multiplication of the two registers and put the result in registers $R1$ and $R0$.\\
+    \item $MULSU$ Multiply a signed number with an unsigned one. The result will go into $R1$ and $R0$.\\
+    \item $FMUL$ Same as $MUL$, but shifts the result one bit to the left. Useful for multiplying fixed point numbers.\\
+    \item $FMULS$ Same as $MULS$, but shifts the result one bit to the left. Useful for multiplying fixed point numbers.\\
+    \item $FMULSU$ Same as $MULSU$, but shifts the result on bit to the left. Useful for multiplying fixed point numbers.\\
+\end{enumerate}
+
+
+    \item Write pseudo-code that describes a function that will take two 16-bit numbers in data memory addresses \$0110-\$0111 and \$0121-\$0122 and add them together. The function will then store the resulting 16-bit number at the address \$0100-\$0101. (Hint: The upper address corresponds to the high byte of the number and don’t forget about the carry in bit.)\$
+  \begin{verbatim}
+    load r0, (0x0110)
+    load r1, (0x0111)
+
+    load r2, (0x0121)
+    load r3, (0x0122)
+
+    add r0, r2
+    add_with_carry r1, r3
+
+    store 0x0100, r0
+    store 0x0101, r1
+  \end{verbatim}
+\end{enumerate}
+
+\end{document}
