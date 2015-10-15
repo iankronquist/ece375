@@ -1,0 +1,69 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 2\\[1cm]
+    }
+    {\large
+        Introduction to AVR Tools
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Introduction}
+Write a short summary that details what you did and why, explain any problems you may have encountered, and answer the questions below .Your write up should follow the required format given on the lab web page.Submit a hard copy of your write up and code to your TA by the beginning of class the week following the lab. NO LATE WORK IS ACCEPTED.
+
+\begin{enumerate}
+
+\item Take a look at the code you downloaded for today’s lab.Notice the lines
+that begin with .def and .equ followed by some type of expression. These are
+known as pre-compiler directives .Define pre-compiler directive.What is the
+difference between the .def and .equ directives? (HINT: see section 5.1 of the
+AVR Starter Guide given on the lab webpage.)\\
+    Pre compiler directives are special pseudo-instructions expanded by the
+    compiler into real instructions or expressions.
+
+    $.def$ defines a symbolic name to a register, essentially aliasing
+    the register. For instance, in the program the $7^{th}$ register is given
+    the name $mpr$ for "Multi-Purpose Register".
+    $.equ$ sets a symbol to an expression, essentially creating a small
+    macro. For instance, in the sample program the wait time symbol $WTime$ is
+    set to the expression 100.
+
+
+
+\item In this lab, you were asked to manipulate data by moving it around in
+memory. In fact, the AVR architecture has two different memories, a program
+memory and data memory. Briefly explain the differences and purposes of these
+memories within your write up. \\
+
+    Program memory is persistent flash memory. Instructions and data in program memory will still exist if the board is restarted. Program memory on this board consists of 64K of 16 bit words. Data memory is volatile SRAM. It is slightly under 4K of 8 bit cells. It is divided into four parts. The section stretching between 0x0000 and 0x01F holds 32 8 bit general purpose registers. The section stretching from 0x0020 to 0x005F holds 64 8 bit I/O registers. The section stretching from 0x0060 to 0x00FF holds 160 extended 8 bit I/O registers. The remaining memory is for general use.
+
+\item You also learned how to make function calls. Explain how the function
+call works, its connection to the memory stack, and why a RET instruction must
+be called to return from a function. To help you understand, comment out the
+stack pointer initialization in the beginning of the code and try running the
+program. Observe and comment on this behavior.\\
+    Functions save computational context on a stack. The location of the top of the stack is always in the stack pointer. When a new function is called, the current value of the stack pointer is pushed onto the top of the stack. Then, the processor jumps to the location in the operand. When it is time to return from the function the processor jumps to the last location in the stack pointer, and pops it off the stack.
+
+
+\end{enumerate}
+
+\end{document}
