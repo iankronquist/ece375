@@ -1,0 +1,99 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 5\\[1cm]
+    }
+    {\large
+        Simple Interrupts
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Prelab}
+\begin{enumerate}
+    \item In computing there are traditionally two ways for a microprocessor to
+    listen to other devices and communicate. These two methods are commonly
+    called  ‘polling’  and  ‘interrupts.’  A  large  amount  of information
+    about  these  two  methods  exists.  Please  describe  what each of them
+    is and give a few examples where you would choose one over the other.\\
+
+    Polling is periodically checking whether a pin is high or low in between
+    other tasks. It is most useful when an input isn't particularly time
+    sensitive or a function doesn't need to be dispatched immediately when a
+    signal is activated. Network operations typically are more amenable to
+    polling.
+
+    Interrupts are triggered at the hardware level. When an interrupt is
+    triggered the microprocessor should save the state of the cpu including the
+    values of all registers. Because interrupts are disabled when handling a
+    routine the interrupt routines should also be fairly short. Keyboard IO and
+    hardware timers are common applications of interrupts.
+
+    \item What is the function for each bit in the following registers in the
+    ATMega128? EICRA, EICRB, and EIMSK. Do not give just a description of each
+    register. You must give specific details of each bit, its possible values,
+    and what those values mean.  You can find this information from either the
+    AVR Instruction Set guide, or the ATMega128 Reference Manual both located
+    on the lab web site .  HINT:  These  registers  are  related  to  ‘external
+    interrupts.’\\
+    The EIMSK register determines which interrupts are enabled. For instance,
+if it is set to to 0x3, the first and second interrupt routines will be
+enabled, but none of the others will be.
+    The EICRA and EICRB registers are the External Interrupt Control Registers.
+    There are 8 possible external interrupts. EICRA configures registers 0-3
+    and EICRB configures registers 4-7. Each register is divided into four
+    nibbles. The first nibble configures the first interrupt, the second
+    register configures the second interrupt and so on. Each nibble can take
+    one of four states. These states determine on what signal the interrupt
+    will fire. The states have different meanings on the EICRA and EICRB
+    interrupts.\\
+    For the EICRA interrupt if a nibble has the value 0b00 then a signal which is
+    level low will generate an interrupt request for the corresponding
+    interrupt. The state 0b01 is reserved for the nibble. The state 0b10
+    indicates that an interrupt request will be fired on a fallig edge. The
+    state 0b11 indicates that an interrupt request will be fired on a rising
+    edge.\\
+    For the EICRB interrupt there is a similar scheme. The value 0b00 indicates
+    that an interrupt will be generated on a low level for the corresponding
+    interrupt. The state 0b01 indicates that any logical change will generate
+    an interrupt request. The state 0b10 indicates that a falling edge between
+    two samples of the interrups will will generate an interrupt request. The
+    state 0b11 will correspondingly indicate that any rising edge between two
+    samples of the interrupt will generate an interrupt request.
+
+    \item The  AVR  microcontroller  uses  ‘interrupt  vectors’  to  run  code  when  an  interrupt  is  triggered.  What  is  an  interrupt  vector?  List the memory locations for the following vectors in the AVR microcontroller: Timer/Counter2 Comparison Match, External Interrupt 2, and USART1-Rx Complete.\\
+
+    Interrupt vectors are special functions which are called when an interrupt
+is triggered. A jump instruction to these functions must be located at a special location. For instance, if the Timer/Counter2 interrupt is triggered, control will be transferred to the address 0x12 in program memory.
+    \begin{enumerate}
+        \item Timer/Counter2 comparison match is at 0x12.
+        \item External Interrupt 2 is at 0x06.
+        \item USART1-Rx Complete is at 0x24.
+    \end{enumerate}
+
+    \item In the AVR microcontroller , like many others, there are several different ways of triggering interrupts. Below is a sample signal being input onto one of the external interrupt pins.  List the specific clock cycles or range of clock cycles that the interrupt would trigger on this waveform if the interrupt was set up as: a.) rising edge, b.) Falling Edge, c.) Level High, and d.) Level Low.
+    \begin{enumerate}[(a)]
+        \item Rising edge: 8, 23\\
+        \item Falling edge: 3, 20\\
+        \item Level high: 1-2, 9-19, 24...\\
+        \item Level low: 4-7, 21-22\\
+    \end{enumerate}
+\end{enumerate} 
+\end{document}
