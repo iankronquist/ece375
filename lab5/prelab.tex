@@ -76,7 +76,7 @@ enabled, but none of the others will be.
     an interrupt request. The state 0b10 indicates that a falling edge between
     two samples of the interrups will will generate an interrupt request. The
     state 0b11 will correspondingly indicate that any rising edge between two
-    samples of the interrupt will generate an interrupt request.
+    samples of the interrupt will generate an interrupt request.\\
 
     \item The  AVR  microcontroller  uses  ‘interrupt  vectors’  to  run  code  when  an  interrupt  is  triggered.  What  is  an  interrupt  vector?  List the memory locations for the following vectors in the AVR microcontroller: Timer/Counter2 Comparison Match, External Interrupt 2, and USART1-Rx Complete.\\
 
@@ -89,11 +89,11 @@ is triggered. A jump instruction to these functions must be located at a special
     \end{enumerate}
 
     \item In the AVR microcontroller , like many others, there are several different ways of triggering interrupts. Below is a sample signal being input onto one of the external interrupt pins.  List the specific clock cycles or range of clock cycles that the interrupt would trigger on this waveform if the interrupt was set up as: a.) rising edge, b.) Falling Edge, c.) Level High, and d.) Level Low.
-    \begin{enumerate}[(a)]
-        \item Rising edge: 8, 23\\
-        \item Falling edge: 3, 20\\
-        \item Level high: 1-2, 9-19, 24...\\
-        \item Level low: 4-7, 21-22\\
+    \begin{enumerate}
+        \item Rising edge: 8, 23
+        \item Falling edge: 3, 20
+        \item Level high: 1-2, 9-19, 24...
+        \item Level low: 4-7, 21-22
     \end{enumerate}
 \end{enumerate} 
 \end{document}
