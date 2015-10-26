@@ -1,0 +1,98 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{enumerate}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{flushright}
+{\large
+ECE 375 Assignment 2\\
+Ian Kronquist
+}
+\end{flushright}
+
+\bigskip
+
+\begin{enumerate}
+    \item Assume that the Control Unit can dispatch the proper register Rd
+    based on the instruction.\\
+    Fetch Cycle
+    \begin{enumerate}[i]
+        \item MAR $\leftarrow$ PC
+        \item MDR $\leftarrow$ M(MAR), PC $\leftarrow$ PC + 1
+        \item IR $\leftarrow$ MDR$_{opcode}$, MAR $\leftarrow$ MDR$_{address}$
+        \item MAR $\leftarrow$ PC
+        \item MDR $\leftarrow$ M(MAR), PC $\leftarrow$ PC + 1
+    \end{enumerate}
+
+    Execute Cycle
+    \begin{enumerate}[i]
+        \item MAR $\leftarrow$ AC
+        \item AC $\leftarrow$ Rd
+        \item AC $\leftarrow$ AC + MDR, Rd $\leftarrow$ AC
+        \item AC  $\leftarrow$ (Rd+1)
+        \item AC $\leftarrow$ AC + C, (Rd+1) $\leftarrow$ AC
+        \item AC $\leftarrow$ MAR
+    \end{enumerate}
+    \item Assume that the instruction has the following layout, according to
+    section 2.11 of the Atmel AVR Instruction Set Manual, revision
+    0856J–AVR–07/2014.\\
+    \begin{tabular}{l l}
+        Opcode & 6 Most Significant Bits \\
+        \hline
+        16 Least Significant Bits
+    \end{tabular}\\
+    Fetch Cycle
+    \begin{enumerate}[i]
+        \item MAR $\leftarrow$ PC
+        \item MDR $\leftarrow$ M(MAR), PC $\leftarrow$ PC + 1
+        \item IR $\leftarrow$ MDR$_{opcode}$, MAR $\leftarrow$ MDR$_{address}$
+        \item 
+        \item 
+        \item 
+        \item 
+        \item 
+        \item 
+        \item 
+        \item 
+        \item 
+    \end{enumerate}
+
+    Execute Cycle
+    \begin{enumerate}[i]
+        \item Temp $\leftarrow$ MAR
+        \item MAR $\leftarrow$ SP
+        \item MDR $\leftarrow$ low(SP)
+        \item M(MAR) $\leftarrow$ MDR, SP $\leftarrow$ SP-1
+        \item MAR $\leftarrow$ SP
+        \item MDR $\leftarrow$ high(SP)
+        \item M(MAR) $\leftarrow$ MDR, SP $\leftarrow$ SP-1, PC$\leftarrow$ Temp
+    \end{enumerate}
+    \item The loop will execute 5 times. At the end of the program the address
+    CTR will contain the value 5.
+
+    \begin{enumerate}[i]
+    \item Set the origin of the program to 0x0. Immediately jump to the START
+    label at 0x46
+    \item Load the address of CTR into the X register using to load immediate
+    instructions.
+    \item Load the value 0xf0 into the 31st register. The binary representation
+    of this value is 0b11110000.
+    \item Set the fifth register to 0.
+    \item Enter the main loop. Clear the carry bit.
+    \item Rotate the 31st register left. The leftmost bit is placed in the
+    carry register.
+    \item If the carry bit is zero, jump to the SKIP label. Otherwise,
+    increment the R5 register.
+    \item At the SKIP label, compare R31 to the literal value 0x0. If they are
+    the same, the Z bit is set and jump to the LOOP label.
+    \item When the loop is finished, store the value of R5 in the CTR location.
+    \item Enter an infinite loop. Finish the program.
+
+    \end{enumerate}
+
+    \item 
+\end{enumerate}
+\end{document}
