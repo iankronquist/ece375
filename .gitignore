@@ -9,3 +9,6 @@
 *.pdf
 *.aux
 *.log
+
+# vim swap files
+.*.swp
