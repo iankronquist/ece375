@@ -36,42 +36,38 @@ Ian Kronquist
         \item AC $\leftarrow$ AC + C, (Rd+1) $\leftarrow$ AC
         \item AC $\leftarrow$ MAR
     \end{enumerate}
-    \item Assume that the instruction has the following layout, according to
-    section 2.11 of the Atmel AVR Instruction Set Manual, revision
-    0856J–AVR–07/2014.\\
-    \begin{tabular}{l l}
-        Opcode & 6 Most Significant Bits \\
+    \item Assume that the instruction has the following layout.\\
+    \begin{tabular}{l}
+        Opcode 16 bits\\
         \hline
         16 Least Significant Bits
     \end{tabular}\\
     Fetch Cycle
     \begin{enumerate}[i]
         \item MAR $\leftarrow$ PC
-        \item MDR $\leftarrow$ M(MAR), PC $\leftarrow$ PC + 1
-        \item IR $\leftarrow$ MDR$_{opcode}$, MAR $\leftarrow$ MDR$_{address}$
-        \item 
-        \item 
-        \item 
-        \item 
-        \item 
-        \item 
-        \item 
-        \item 
-        \item 
+        \item MDR $\leftarrow$ M(MAR)$_{upper}$, PC $\leftarrow$ PC + 1
+        \item IR$_{upper}$ $\leftarrow$ MDR
+        \item MDR $\leftarrow$ M(MAR)$_{lower}$
+        \item IR$_{lower}$ $\leftarrow$ MDR
+        \item MAR $\leftarrow$ PC
+        \item MDR $\leftarrow$ M(MAR)$_{lower}$, PC $\leftarrow$ PC + 1
+        \item TEMP$_{upper}$ $\leftarrow$ MDR
+        \item MDR $\leftarrow$ M(MAR)$_{lower}$
+        \item TEMP$_{lower}$ $\leftarrow$ MDR
     \end{enumerate}
 
     Execute Cycle
     \begin{enumerate}[i]
-        \item Temp $\leftarrow$ MAR
         \item MAR $\leftarrow$ SP
-        \item MDR $\leftarrow$ low(SP)
-        \item M(MAR) $\leftarrow$ MDR, SP $\leftarrow$ SP-1
+        \item MDR $\leftarrow$ PC$_{lower}$, SP $\leftarrow$ SP - 1
+        \item M(MAR) $\leftarrow$ MDR
         \item MAR $\leftarrow$ SP
-        \item MDR $\leftarrow$ high(SP)
-        \item M(MAR) $\leftarrow$ MDR, SP $\leftarrow$ SP-1, PC$\leftarrow$ Temp
+        \item MDR $\leftarrow$ PC$_{upper}$
+        \item M(MAR) $\leftarrow$ MDR
+        \item PC $\leftarrow$ TEMP, SP $\leftarrow$ SP - 1
     \end{enumerate}
-    \item The loop will execute 5 times. At the end of the program the address
-    CTR will contain the value 5.
+    \item The loop will execute 4 times. At the end of the program the address
+    CTR will contain the value 4.
 
     \begin{enumerate}[i]
     \item Set the origin of the program to 0x0. Immediately jump to the START
