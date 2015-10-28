@@ -1,0 +1,39 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.52</VERSION>
+ <DEVICE>"ATmega128"</DEVICE>
+ <WORKING_DIR>Z:\assemblertry2\AssemblerApplication1\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include\m128def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>Z:\assemblertry2\AssemblerApplication1\Debug/AssemblerApplication1.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>AssemblerApplication1.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>AssemblerApplication1.map</FILE>
+  <FILE>AssemblerApplication1.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <INIT><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>58</LINE></INIT>
+  <MAIN><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>72</LINE></MAIN>
+  <ADD16><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>121</LINE></ADD16>
+  <MUL24><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>245</LINE></MUL24>
+  <DONE><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>108</LINE></DONE>
+  <MUL24v1><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>166</LINE></MUL24v1>
+  <MUL24_OLOOP><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>194</LINE></MUL24_OLOOP>
+  <MUL24_ILOOP><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>201</LINE></MUL24_ILOOP>
+  <outer><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>286</LINE></outer>
+  <inner><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>300</LINE></inner>
+  <MUL16><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>352</LINE></MUL16>
+  <MUL16_OLOOP><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>379</LINE></MUL16_OLOOP>
+  <MUL16_ILOOP><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>386</LINE></MUL16_ILOOP>
+  <FUNC><FILE>Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm</FILE><LINE>430</LINE></FUNC>
+ </LABELS>
+</ASSEMBLER_INFO>
