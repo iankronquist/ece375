@@ -36,7 +36,7 @@
 .equ	addrC = 0x0110
 .equ	addrD = 0x0113
 .equ	addDest0 = $0110			; End Address of Product Result\
-.equ	mulDest0 = 0x0145			; End Address of Product Result
+.equ	mulDest0 = 0x0140			; End Address of Product Result
 
 
 ;***********************************************************
@@ -289,8 +289,8 @@ MUL24:
 		mov		K,	outerCount
 		ldi		I, 0x3
 		sub		I, K
-		sub		ZL, I
-		sbc		ZH, zero
+		add		ZL, I
+		adc		ZH, zero
 
 		ldi 	YL,	low(srcB)
 		ldi 	YH,	high(srcB)
@@ -305,16 +305,16 @@ MUL24:
 		add		r0,	K
 		adc		r1,	zero
 		;mov 	carry,	r1
- 		st  	Z,	r0
-		ld		K,	-Z
+ 		st  	Z+,	r0
+		ld		K,	Z
 		add		r1,	K
 		clr		carry
 		adc		carry, zero
-		st  	Z,	r1
-		ld		K, -Z
+		st  	Z+,	r1
+		ld		K, Z
 		add		K, carry
 		st  	Z,	K
-		adiw	Z,	1
+		sbiw	Z,	1
 		dec 	innerCount
 		brne	inner
 		

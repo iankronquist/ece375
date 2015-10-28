@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm Wed Oct 28 12:00:35 2015
+AVRASM ver. 2.1.52  Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm Wed Oct 28 12:06:12 2015
 
 
 EQU  SIGNATURE_000 0000001e
@@ -883,7 +883,7 @@ EQU  HAddrP       00000109
 EQU  addrC        00000110
 EQU  addrD        00000113
 EQU  addDest0     00000110
-EQU  mulDest0     00000145
+EQU  mulDest0     00000140
 CSEG INIT         00000046
 CSEG MAIN         0000004b
 CSEG ADD16        00000064

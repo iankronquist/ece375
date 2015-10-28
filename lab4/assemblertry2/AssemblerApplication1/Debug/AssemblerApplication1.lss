@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm Wed Oct 28 12:00:35 2015
+AVRASM ver. 2.1.52  Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm Wed Oct 28 12:06:12 2015
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include\m128def.inc'
 Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm(16): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include\m128def.inc'
@@ -1307,7 +1307,7 @@ Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm(254): warning: 
                  .equ	addrC = 0x0110
                  .equ	addrD = 0x0113
                  .equ	addDest0 = $0110			; End Address of Product Result\
-                 .equ	mulDest0 = 0x0145			; End Address of Product Result
+                 .equ	mulDest0 = 0x0140			; End Address of Product Result
                  
                  
                  ;***********************************************************
@@ -1457,7 +1457,7 @@ Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm(254): warning: 
 000093 e0d1      		ldi		YH, high(addrB)	; Load high byte
                  
                  		; Set Z to begginning address of resulting Product
-000094 e4e5      		ldi		ZL, low(mulDest0)	; Load low byte
+000094 e4e0      		ldi		ZL, low(mulDest0)	; Load low byte
 000095 e0f1      		ldi		ZH, high(mulDest0); Load high byte
                  
                  		; Begin outer for loop
@@ -1555,13 +1555,13 @@ Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm(254): warning: 
 0000ce e0b1      	ldi 	XH,	high(srcA)
                  
                  	outer:
-0000cf e4e5      		ldi 	ZL,	low(mulDest0)
+0000cf e4e0      		ldi 	ZL,	low(mulDest0)
 0000d0 e0f1      		ldi 	ZH,	high(mulDest0)
 0000d1 2f41      		mov		K,	outerCount
 0000d2 e023      		ldi		I, 0x3
 0000d3 1b24      		sub		I, K
-0000d4 1be2      		sub		ZL, I
-0000d5 0bf5      		sbc		ZH, zero
+0000d4 0fe2      		add		ZL, I
+0000d5 1ff5      		adc		ZH, zero
                  
 0000d6 e1c3      		ldi 	YL,	low(srcB)
 0000d7 e0d1      		ldi 	YH,	high(srcB)
@@ -1576,16 +1576,16 @@ Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm(254): warning: 
 0000dd 0e04      		add		r0,	K
 0000de 1e15      		adc		r1,	zero
                  		;mov 	carry,	r1
-0000df 8200       		st  	Z,	r0
-0000e0 9142      		ld		K,	-Z
+0000df 9201       		st  	Z+,	r0
+0000e0 8140      		ld		K,	Z
 0000e1 0e14      		add		r1,	K
 0000e2 24ff      		clr		carry
 0000e3 1ef5      		adc		carry, zero
-0000e4 8210      		st  	Z,	r1
-0000e5 9142      		ld		K, -Z
+0000e4 9211      		st  	Z+,	r1
+0000e5 8140      		ld		K, Z
 0000e6 0d4f      		add		K, carry
 0000e7 8340      		st  	Z,	K
-0000e8 9631      		adiw	Z,	1
+0000e8 9731      		sbiw	Z,	1
 0000e9 950a      		dec 	innerCount
 0000ea f779      		brne	inner
                  		
@@ -1742,7 +1742,7 @@ x  :   3 y  :   6 z  :  33
 Registers used: 22 out of 35 (62.9%)
 
 "ATmega128" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   8 add   :   6 adiw  :   5 and   :   0 
+.lds  :   0 .sts  :   0 adc   :   9 add   :   7 adiw  :   4 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
@@ -1756,13 +1756,13 @@ jmp   :   0 ld    :  22 ldd   :   0 ldi   :  45 lds   :   0 lpm   :   0
 lsl   :   0 lsr   :   0 mov   :   1 movw  :   0 mul   :   3 muls  :   0 
 mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :   2 
 pop   :  47 push  :  47 rcall :   2 ret   :   5 reti  :   0 rjmp  :   2 
-rol   :   0 ror   :   0 sbc   :   1 sbci  :   0 sbi   :   0 sbic  :   0 
-sbis  :   0 sbiw  :   2 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 
+rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 
+sbis  :   0 sbiw  :   3 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 
 seh   :   0 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 
 sev   :   0 sez   :   0 sleep :   0 spm   :   0 st    :  19 std   :   0 
-sts   :   0 sub   :   2 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
+sts   :   0 sub   :   1 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
 
-Instructions used: 21 out of 114 (18.4%)
+Instructions used: 20 out of 114 (17.5%)
 
 "ATmega128" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
