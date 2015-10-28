@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm Wed Oct 28 11:45:02 2015
+AVRASM ver. 2.1.52  Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm Wed Oct 28 12:00:35 2015
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include\m128def.inc'
 Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm(16): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.1117\avrassembler\Include\m128def.inc'
@@ -1401,14 +1401,14 @@ Z:\assemblertry2\AssemblerApplication1\AssemblerApplication1.asm(254): warning: 
                  
 00006b e0e0      		ldi	ZL,	low(addrA)
 00006c e0f1      		ldi	ZH,	high(addrA)
-00006d 2e1f      		mov	r1, ZH
-00006e 2e2e      		mov	r2, ZL
+00006d 9011      		ld	r1, Z+
+00006e 8020      		ld	r2, Z
                  
 00006f e0e2      		ldi	ZL,	low(addrB)
 000070 e0f1      		ldi	ZH,	high(addrB)
                  		; TODO: optimize away
-000071 2e3f      		mov	r3, ZH
-000072 2e4e      		mov	r4, ZL
+000071 9031      		ld	r3, Z+
+000072 8040      		ld	r4, Z
                  
                  		; Add operands
 000073 0c13      		add	r1, r3
@@ -1737,8 +1737,8 @@ counted separately from r26..r31 here.
 r0 :  16 r1 :  18 r2 :  13 r3 :  22 r4 :  16 r5 :   2 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   6 
 r16:  10 r17:  15 r18:  17 r19:   6 r20:  11 r21:  10 r22:   0 r23:   0 
-r24:   0 r25:   0 r26:   9 r27:   9 r28:  12 r29:  12 r30:  24 r31:  24 
-x  :   3 y  :   6 z  :  29 
+r24:   0 r25:   0 r26:   9 r27:   9 r28:  12 r29:  12 r30:  22 r31:  22 
+x  :   3 y  :   6 z  :  33 
 Registers used: 22 out of 35 (62.9%)
 
 "ATmega128" instruction use summary:
@@ -1752,8 +1752,8 @@ clc   :   1 clh   :   0 cli   :   0 cln   :   0 clr   :   6 cls   :   0
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
 cpi   :   0 cpse  :   0 dec   :   6 elpm  :   0 eor   :   0 fmul  :   0 
 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 
-jmp   :   0 ld    :  18 ldd   :   0 ldi   :  45 lds   :   0 lpm   :   0 
-lsl   :   0 lsr   :   0 mov   :   5 movw  :   0 mul   :   3 muls  :   0 
+jmp   :   0 ld    :  22 ldd   :   0 ldi   :  45 lds   :   0 lpm   :   0 
+lsl   :   0 lsr   :   0 mov   :   1 movw  :   0 mul   :   3 muls  :   0 
 mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :   2 
 pop   :  47 push  :  47 rcall :   2 ret   :   5 reti  :   0 rjmp  :   2 
 rol   :   0 ror   :   0 sbc   :   1 sbci  :   0 sbi   :   0 sbic  :   0 

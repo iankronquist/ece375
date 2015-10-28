@@ -130,14 +130,14 @@ ADD16:
 
 		ldi	ZL,	low(addrA)
 		ldi	ZH,	high(addrA)
-		mov	r1, ZH
-		mov	r2, ZL
+		ld	r1, Z+
+		ld	r2, Z
 
 		ldi	ZL,	low(addrB)
 		ldi	ZH,	high(addrB)
 		; TODO: optimize away
-		mov	r3, ZH
-		mov	r4, ZL
+		ld	r3, Z+
+		ld	r4, Z
 
 		; Add operands
 		add	r1, r3
