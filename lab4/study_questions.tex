@@ -1,0 +1,45 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 4\\[1cm]
+    }
+    {\large
+         Large Number Arithmetic
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+\section{Introduction}
+In this lab we wrote a very simple mathematical calculation: $(A+B)^{2}$. Because addition can carry over, two numbers which started as 16 bits long could possibly span 24 after addition. Similarly, multiplication can possibly double the length of a number. Multiplying two 24 bit numbers can yield a number which is 48 bits long.
+The goal of this lab was to become better acquainted with loops and more complicated control structures in AVR assembly. Additionally it required practice reading and writing memory and familiarity with the ADC instruction.
+
+\begin{enumerate}
+
+\item This assignment consisted of writing two functions ADD16 and MUL24. ADD16 took two 16 bit numbers and added them together, setting the carry bit if necessary. It boiled down to a call to the instructions add and adc. MUL24 took two 24 bit numbers and multiplied them together, producing a 48 bit number. This required two loops, an inner loop and an outer loop. Each iteration the carried values from the previous computation had to be added to the current computation.
+\end{enumerate}
+
+\section{Difficulties}
+I found this lab the most challenging of those we've done so far by a long shot. Copying the skeleton code and making a few minor changes nearly worked, but it was difficult to understand where the program went wrong. In order to strengthen my understanding of the algorithm I decided to implement it completely from scratch. In doing so I messed up the order of the operands and forgot to read a carry byte.
+
+\section{Conclusion}
+Assembly language programming is a fraught process. Basic abilities we take for granted in higher level languages may require complicated structures in assembly.
+
+
+\end{document}
