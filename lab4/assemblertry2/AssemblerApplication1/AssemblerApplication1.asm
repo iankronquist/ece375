@@ -21,7 +21,7 @@
 .def	mpr = r16				; Multipurpose register 
 .def	rlo = r0				; Low byte of MUL result
 .def	rhi = r1				; High byte of MUL result
-.def	zero = r2				; Zero register, set to zero in INIT, useful for calculations
+.def	zero = r6				; Zero register, set to zero in INIT, useful for calculations
 .def	A = r3					; An operand
 .def	B = r4					; Another operand
 .def	C = r5
@@ -149,8 +149,8 @@ ADD16:
 		ldi	ZL, low(addrC)
 		ldi	ZH, high(addrC)
 		st	Z+,	r0
-		st	Z+,	r1
-		st	Z,	r2
+		st	Z+,	r2
+		st	Z,	r1
 
 		; Restore registers
 		pop ZH
