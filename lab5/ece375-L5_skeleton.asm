@@ -24,12 +24,6 @@
 .def	olcnt = r19				; Outer Loop Counter
 ; Other register renames
 
-; .equ	MovFwd = (1<<EngDirR|1<<EngDirL)	; Move Forwards Command
-; .equ	MovBck = $00				; Move Backwards Command
-; .equ	TurnR = (1<<EngDirL)			; Turn Right Command
-; .equ	TurnL = (1<<EngDirR)			; Turn Left Command
-; .equ	Halt = (1<<EngEnR|1<<EngEnL)		; Halt Command
-
 
 ; Constants for interactions such as
 .equ	WskrR = 0				; Right Whisker Input Bit
@@ -49,12 +43,12 @@
 .org	$0000					; Beginning of IVs
 		rjmp 	INIT			; Reset interrupt
 
-.org	$0004					; Beginning of IVs
-		rcall 	HitRight			; Reset interrupt
+.org	$0002					; Beginning of IVs
+		rcall 	HitLeft			; Reset interrupt
 		reti
 
-.org	$0006					; Beginning of IVs
-		rcall 	HitLeft			; Reset interrupt
+.org	$0004					; Beginning of IVs
+		rcall 	HitRight			; Reset interrupt
 		reti
 
 .org	$0046					; End of Interrupt Vectors
@@ -94,7 +88,7 @@ INIT:	; The initialization routine
 		; Set the External Interrupt Mask
 
 		; Enable interrupts 2 and 3, External interrupt requests 0 and 1
-		ldi	mpr, 0x06
+		ldi	mpr, 0x03
 		out	EIMSK, mpr
 
 		sei
