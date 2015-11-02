@@ -9,10 +9,10 @@
     \vspace*{4cm}
     \begin{flushright}
     {\huge
-        ECE 375 Lab 2\\[1cm]
+        ECE 375 Lab 3\\[1cm]
     }
     {\large
-        Introduction to AVR Tools
+     Data Manipulation and LCD Display
     }
     \end{flushright}
     \begin{flushleft}
@@ -29,6 +29,8 @@
 
 \section{Introduction}
 Write a short summary that details what you did and why, explain any problems you may have encountered, and answer the questions below .Your write up should follow the required format given on the lab web page.Submit a hard copy of your write up and code to your TA by the beginning of class the week following the lab. NO LATE WORK IS ACCEPTED.
+
+In this lab we wrote our names on the LCD screen. We learned to use the LPM instruction and call subroutines. We also learned how to set up the stack and write very simple loops.
 
 \begin{enumerate}
 
@@ -65,5 +67,12 @@ program. Observe and comment on this behavior.\\
 
 
 \end{enumerate}
+
+\section{Difficulties}
+This lab was fairly straightforward. It was important to remember that the stack starts at the bottom of memory and grows up.
+
+\section{Conclusion}
+The distinction between data and program memory has important consequences for AVR assembly programs. Constants cannot be directly placed in data memory. They must either be placed in program memory or loaded directly from assembly instructions. This is a significant difference from x86.
+
 
 \end{document}

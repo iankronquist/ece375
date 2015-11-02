@@ -9,10 +9,10 @@
     \vspace*{4cm}
     \begin{flushright}
     {\huge
-        ECE 375 Lab 1\\[1cm]
+        ECE 375 Lab 2\\[1cm]
     }
     {\large
-        Introduction to AVR Tools
+         C->Assembly->Machine Code->TekBot
     }
     \end{flushright}
     \begin{flushleft}
@@ -29,6 +29,8 @@
 
 \section{Introduction}
 Write a short summary that details what you did and why, explain any problems you may have encountered, and answer the questions below. Your write up and code must be submitted to your TA at the beginning of class the week following the lab. NO LATE WORK IS ACCEPTED.
+
+For this lab we wrote a C program which turned the tekbot into a bumper car. When it would run into a wall it would reverse and turn away from the wall. We did this by polling the whiskers in a while loop. This is quite inefficient, but it is not timing critical and the processor would be in a busy wait loop anyway. The ports needed to be configured properly for input and output, and bit masks were required to determine whether the inputs had been hit. It was somewhat deceiving that the pins are active low, so the value needed to be reversed before applying the bit mask.
 
 \section{Additional Questions}
 \begin{enumerate}
@@ -60,6 +62,17 @@ Write a short summary that details what you did and why, explain any problems yo
     number of fun interrupt handling functions.
 
 \end{enumerate}
+
+\section{Difficulties}
+Some of the instructions were difficult to find or out of date. It was
+unfortunate that this lab required us to use Atmel studio so it could not be
+performed on a Mac or Linux system.
+
+\section{Conclusion}
+Embedded C affords a lot of flexibility and higher level descriptions of
+program control flow. C compilers may not be as good at optimizing programs as
+I thought they might.
+
 
 \section{Source Code}
 \begin{verbatim}
