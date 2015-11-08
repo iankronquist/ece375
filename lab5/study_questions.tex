@@ -1,0 +1,46 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 4\\[1cm]
+    }
+    {\large
+         Interrupted Whiskers
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+\section{Introduction}
+In this lab we had our first experience with interrupts. We learned how to build an interrupt vector table describing which subroutine to enter after a certain interrupt is triggered. We learned how to set the interrupt mask which determines which interrupts are enabled and which ones are disabled. We configured the interrupts to trigger on the falling edge of a signal.
+
+\begin{enumerate}
+
+\item C code is significantly easier to understand and modify, and significantly shorter. Unfortunately the generated assembly is not as efficient as I had originally hoped. However, the C program relied on polling, which is less accurate than interrupts and requires the processor to do more work. Assembly has the possibility of being considerably more efficient. Writing interrupts is superior to polling. Fortunately it is possible to write interrupt handling routines in C, which would likely be the preferred option for all tasks which are not extremely time critical.
+
+\item Yes, it would be possible to use the timer/counter interrupt while in an interrupt service routine. This is called 'nested interrupts' and is typically not preferred practice. Most interrupt service routines are supposed to be short and sweet. However, you would need to reenable interrupts within the middle of the routine. Note that the external interrupts have a higher priority than the timer/counter interrupt.
+\end{enumerate}
+
+\section{Difficulties}
+I encountered a strange issue with setting the bitmasks of the interrupts where setting the mask to 0x6 would enable interrupts 2, 3, and 4 (counting from 1), not just 2 and 3 like I expected. I changed my program to use interrupts 1 and 2 instead and everything worked as expected.
+
+\section{Conclusion}
+On embedded systems interrupts are the preferred way to schedule and perform time sensitive tasks triggered by inputs external from the processor.
+
+
+\end{document}

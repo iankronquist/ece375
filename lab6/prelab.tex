@@ -1,0 +1,45 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 6\\[1cm]
+    }
+    {\large
+        Timer/Counters
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Prelab}
+\begin{enumerate}
+    \item
+        \begin{verbatim}
+            out TCNT1L, R24
+            out TCNT1H, R25
+        \end{verbatim}
+
+   \item
+        \begin{verbatim}
+            in R24, LOW(TCNT1)
+            in R25, HIGH(TCNT1)
+        \end{verbatim}
+    \item $0xFF-127=128$ 'ticks' of the timer will occur before the counter overflows. 1 Hertz is 1 cycle per second so 1 Mhz is $10^6$ cycles per second. $128/(16 \times 10^6)=8e-06$ seconds which is 8 microseconds.
+\end{enumerate} 
+
+\end{document}
