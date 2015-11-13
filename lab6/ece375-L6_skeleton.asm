@@ -80,11 +80,13 @@ INIT:
 		; NOTE: must initialize both EICRA and EICRB
 
 		; Don't use any of the higher interrupts
-		ldi		mpr, 0x0
+		ldi		mpr, (1<<ISC01)|(0<<ISC00)|(1<<ISC11)|(0<<ISC10)
+		;ldi		mpr, 0x0
 		sts		EICRA, mpr
 
 		; Interrupts 0 and 1 should fire on a falling edge
-		ldi		mpr, (1<<ISC41)|(1<<ISC40)|(1<<ISC51)|(1<<ISC50)
+		;ldi		mpr, (1<<ISC41)|(1<<ISC40)|(1<<ISC51)|(1<<ISC50)
+		ldi		mpr, 0x0
 
 		out		EICRB, mpr
 		; Set the External Interrupt Mask
@@ -93,14 +95,14 @@ INIT:
 		ldi		mpr, 0x03
 		out		EIMSK, mpr
 
-		ldi		mpr,	(1<<WGM01)|(1<<WGM00)|(1<<COM00)|(1<<COM01)|(1<<CS00)
+		ldi		mpr,	(1<<WGM01)|(1<<WGM00)|(1<<COM00)|(1<<COM01)|(1<<CS00)|(1<<CS10)
 		out		TCCR0,	mpr
 		out		TCCR2,	mpr
 
 		; Turn off motors.
-		;ldi		mpr,	0xff
-		;out		OCR0,	mpr
-		;out		OCR2,	mpr
+		ldi		mpr,	0xff
+		out		OCR0,	mpr
+		out		OCR2,	mpr
 
 
 		sei
@@ -129,7 +131,6 @@ Incr:
 	push    mpr2
 	push    ZH
 	push    ZL
-
 	in	    mpr,	OCR0
 
 	;cpi	    mpr,	0xff
@@ -138,9 +139,8 @@ Incr:
 	ldi		mpr2,	16
 	add		mpr,	mpr2
 	out		OCR0,	mpr
-	in		mpr,	OCR2
-	add		mpr,	mpr2
 	out		OCR2,	mpr
+
 
 	ldi		ZL,		low(Level)
 	ldi		ZH,		high(Level)
@@ -149,10 +149,6 @@ Incr:
 	st		Z,		mpr
 	andi	mpr,	0x0F
 	out		PORTB,	mpr
-	ldi		mpr,	255
-	rcall	Wait
-
-
 
 IncrDone:
 	pop		ZL
@@ -161,13 +157,13 @@ IncrDone:
 	pop		mpr
 	ret
 
+
 Decr:
 	; Save registers
 	push    mpr
 	push    mpr2
 	push    ZH
 	push    ZL
-
 	in	    mpr,	OCR0
 
 	;cpi	    mpr,	0x0
@@ -176,22 +172,16 @@ Decr:
 	ldi		mpr2,	16
 	sub		mpr,	mpr2
 	out		OCR0,	mpr
-	in		mpr,	OCR2
-	sub		mpr,	mpr2
 	out		OCR2,	mpr
 
 
-	ldi		ZL,	low(Level)
-	ldi		ZH,	high(Level)
+	ldi		ZL,		low(Level)
+	ldi		ZH,		high(Level)
 	ld		mpr,	Z
 	dec		mpr
 	st		Z,		mpr
-
 	andi	mpr,	0x0F
 	out		PORTB,	mpr
-	ldi		mpr,	255
-	rcall	Wait
-
 
 DecrDone:
 	pop		ZL
@@ -199,6 +189,8 @@ DecrDone:
 	pop		mpr2
 	pop		mpr
 	ret
+
+
 
 
 Wait:
