@@ -24,6 +24,8 @@
 .def	ilcnt = r19				; Inner Loop Counter
 .def	olcnt = r20				; Outer Loop Counter
 
+.equ	Level = 0x1000
+
 .equ	EngEnR = 4				; right Engine Enable Bit
 .equ	EngEnL = 7				; left Engine Enable Bit
 .equ	EngDirR = 5				; right Engine Direction Bit
@@ -104,6 +106,11 @@ INIT:
 		out		OCR0,	mpr
 		out		OCR2,	mpr
 
+		ldi		ZL,		low(Level)
+		ldi		ZH,		high(Level)
+		ldi		mpr,	0x0
+		st		Z,		mpr
+
 
 		sei
 
@@ -125,30 +132,67 @@ MAIN:
 ;***********************************************************
 
 
+Decr:
+	; Save registers
+	push    mpr
+	push    mpr2
+	push    ZH
+	push    ZL
+
+	ldi		ZL,		low(Level)
+	ldi		ZH,		high(Level)
+	ld		mpr,	Z
+
+	cpi	    mpr,	0x0
+	breq    DecrDone
+
+	dec		mpr
+	andi	mpr,	0x0F
+	st		Z,		mpr
+	out		PORTB,	mpr
+
+
+
+	in	    mpr,	OCR0
+	ldi		mpr2,	16
+	add		mpr,	mpr2
+	out		OCR0,	mpr
+	out		OCR2,	mpr
+
+DecrDone:
+	pop		ZL
+	pop		ZH
+	pop		mpr2
+	pop		mpr
+	ret
+
+
 Incr:
 	; Save registers
 	push    mpr
 	push    mpr2
 	push    ZH
 	push    ZL
-	in	    mpr,	OCR0
-
-	;cpi	    mpr,	0xff
-	;breq    IncrDone
-
-	ldi		mpr2,	16
-	add		mpr,	mpr2
-	out		OCR0,	mpr
-	out		OCR2,	mpr
-
 
 	ldi		ZL,		low(Level)
 	ldi		ZH,		high(Level)
 	ld		mpr,	Z
+
+	cpi	    mpr,	0x0f
+	breq    IncrDone
+
 	inc		mpr
-	st		Z,		mpr
 	andi	mpr,	0x0F
+	st		Z,		mpr
 	out		PORTB,	mpr
+
+
+
+	in	    mpr,	OCR0
+	ldi		mpr2,	16
+	sub		mpr,	mpr2
+	out		OCR0,	mpr
+	out		OCR2,	mpr
 
 IncrDone:
 	pop		ZL
@@ -158,37 +202,6 @@ IncrDone:
 	ret
 
 
-Decr:
-	; Save registers
-	push    mpr
-	push    mpr2
-	push    ZH
-	push    ZL
-	in	    mpr,	OCR0
-
-	;cpi	    mpr,	0x0
-	;breq    DecrDone
-
-	ldi		mpr2,	16
-	sub		mpr,	mpr2
-	out		OCR0,	mpr
-	out		OCR2,	mpr
-
-
-	ldi		ZL,		low(Level)
-	ldi		ZH,		high(Level)
-	ld		mpr,	Z
-	dec		mpr
-	st		Z,		mpr
-	andi	mpr,	0x0F
-	out		PORTB,	mpr
-
-DecrDone:
-	pop		ZL
-	pop		ZH
-	pop		mpr2
-	pop		mpr
-	ret
 
 
 
@@ -216,8 +229,8 @@ ILoop:	dec		ilcnt			; decrement ilcnt
 ;*	Stored Program Data
 ;***********************************************************
 		; Enter any stored data you might need here
-Level:
-.dw 0
+;Level:
+;.dw 0, 0, 0, 0
 
 ;***********************************************************
 ;*	Additional Program Includes
