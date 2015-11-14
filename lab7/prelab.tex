@@ -1,0 +1,34 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 7\\[1cm]
+    }
+    {\large
+        Remotely Operated Vehicle
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+
+\section{Prelab}
+\begin{enumerate}
+    \item Remote control helicopters are pretty fun toys with a couple micro controllers. The first is in the controller, and the second is in the helicopter itself. They require a radio which communicates between the controllers. Each controller needs to be able to read datagrams sent from the radio, perhaps over a serial interface similar to USART. The helicopter will need to control the speed of its motor, perhaps using pulse width management and a timer. Any flashing lights connected to the machine would be simple ports to write to. The controller also needs to be able to read from and write to the radio. It may have two joysticks and a speed control gauge. All of these are pins the controller needs to read from.
+\end{enumerate} 
+
+\end{document}
