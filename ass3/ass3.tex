@@ -1,0 +1,142 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{enumerate}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{flushright}
+{\large
+ECE 375 Assignment 3\\
+Ian Kronquist
+}
+\end{flushright}
+
+\bigskip
+
+\begin{enumerate}
+    \item
+    \begin{enumerate}
+        \item
+        \begin{tabular}{l l l}
+             Interrupt & Port & IVT Address \\
+             \hline
+             INT0 & PD0 & 0x02 \\
+             INT3 & PD3 & 0x08 \\
+             INT5 & PD5 & 0x0c \\
+        \end{tabular}
+        \item Interrupt 3 will trigger on a falling edge.\\
+        \item PORTE and PORTD \\
+        \item \begin{verbatim}
+            ...
+            ldi mpr,   $00
+            out DDRD,  mpr
+            out DDRE,  mpr
+            ldi mpr,   0b00001000
+            out PORTD, mpr
+            ...
+        \end{verbatim}
+        \item \begin{verbatim}
+            ISR_DevA:
+                ldi mpr, 0x00
+                out EIMSK, mpr
+                ...
+                ldi, mpr 0x2a
+                out EIMSK, mpr
+                ret
+        \end{verbatim}
+        \item The ISR\_DevA routine will be executed first.\\
+    \end{enumerate}
+    \item Assume that we can destroy the contents of mpr.
+    \begin{verbatim}
+        (1) ldi XL, low(BASEADDR)
+        (2) ldi XH, high(BASEADDR)
+        (3) in  mpr, PIND
+        (4) add XL, mpr
+        (5) adc XH, zero
+        (6) ld  mpr, X
+        (7) out PORTB, mpr
+        (8) ret
+    \end{verbatim}
+    \item \begin{verbatim}
+        .equ  prescalar 3035
+        INIT:
+            ; Initialize stack pointer to RAMEND
+            ldi mpr, low(RAMEND)
+            out SPL, mpr
+            ldi mpr, high(RAMEND)
+            out SPH, mpr
+
+            ; Clear TCCR1A and TCCR1C.
+            ; TCCR1A is mostly related to PWM
+            ; and TCCR1C is mostl concerned with fast comparison.
+            clr mpr
+            out TCCR1A, mpr
+            out TCCR1C, mpr
+
+            ; Set the prescalar to 256
+            ldi mpr, 0x04
+            out TCCR1B, mpr
+
+        WAIT:
+            ; Preserve mpr.
+            push mpr
+
+            ; Load the prescalar.
+            ; Remember to push the high byte first!
+            ldi mpr, high(prescalar)
+            sts TCNT1H, mpr
+            ldi mpr, low(prescalar)
+            sts TCNT1L, mpr
+
+            ; Clear the timer overflow bit for timer 1.
+            cbi TIFR, TOV1
+
+            ; Enter the wait loop.
+            ; Continuously poll TOV1 to see if it's been flipped
+            LOOP:
+                in   mpr, TIFR1
+                ; Sets Z flag!
+                andi mpr, (1<<TOV1)
+                brne LOOP
+
+            ; Cleanup
+            pop mpr
+            ret
+    \end{verbatim}
+    \item $UBRR = 16 Mhz/(8 \times 96k) -1 = 103$.
+    \begin{verbatim}
+        ; Initialize stack pointer
+        ( 1) ldi mpr, high(RAMEND)
+        ( 2) out SPL, mpr
+        ( 3) ldi mpr, low(RAMEND)
+        ( 4) out SPH, mpr
+
+        ; Set up PIND for input. We can do this in one step!
+        ( 5) cbi DDRD, 0x2
+        ( 6) nop
+        ; Alternatively do:
+        ( 5) ldi mpr, (1<<PD2)
+        ( 6) out DDRD, mpr
+
+        ; Set the baud rate and enable double data rate
+        ( 7) ldi mpr, 103
+        ( 8) st UBRR1L, mpr
+        ( 9) ldi, mpr, (1<<U2X1)
+        (10) sts UCSR1A, mpr
+
+        ; Enable receive interrupt
+        (11) ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
+        (12) out UCSR1B, mpr
+
+        ; Set frame format
+        (13) ldi mpr, (1<<UCCSZ10)|(1<<UCCSZ11)|(1<<USBS1)|(1<<USBM1)
+        (14) out UCSR1C, mpr
+
+        ; Inside the interrupt handler
+        (15) ldi mpr, UDR1
+        (16) st  X+, mpr
+    \end{verbatim}
+\end{enumerate}
+\end{document}
