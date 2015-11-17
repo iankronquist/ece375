@@ -105,7 +105,7 @@ Ian Kronquist
             pop mpr
             ret
     \end{verbatim}
-    \item $UBRR = 16 Mhz/(8 \times 96k) -1 = 103$.
+    \item $UBRR = 16 Mhz/(8 \times 96k) -1 = 207$.
     \begin{verbatim}
         ; Initialize stack pointer
         ( 1) ldi mpr, high(RAMEND)
@@ -121,18 +121,18 @@ Ian Kronquist
         ( 6) out DDRD, mpr
 
         ; Set the baud rate and enable double data rate
-        ( 7) ldi mpr, 103
+        ( 7) ldi mpr, 207
         ( 8) st UBRR1L, mpr
         ( 9) ldi, mpr, (1<<U2X1)
         (10) sts UCSR1A, mpr
 
         ; Enable receive interrupt
         (11) ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
-        (12) out UCSR1B, mpr
+        (12) sts UCSR1B, mpr
 
         ; Set frame format
-        (13) ldi mpr, (1<<UCCSZ10)|(1<<UCCSZ11)|(1<<USBS1)|(1<<USBM1)
-        (14) out UCSR1C, mpr
+        (13) ldi mpr, (1<<UCSZ10)|(1<<UCSZ11)|(1<<USBS1)|(1<<UPM01)
+        (14) sts UCSR1C, mpr
 
         ; Inside the interrupt handler
         (15) ldi mpr, UDR1
