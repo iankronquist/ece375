@@ -35,6 +35,8 @@
 .equ	buffer = $0100
 .equ	whichBit = $1100
 
+.equ	freezeCount = $0120
+
 .equ	BotID = 42 ;(Enter you group ID here (8bits)); Unique XD ID (MSB = 0)
 
 ;/////////////////////////////////////////////////////////////
@@ -110,11 +112,12 @@ INIT:
     sts UBRR1L, mpr
     ldi mpr, high(416)
     sts UBRR1H, mpr
-    ldi mpr, (1<<U2X1)
+    ldi mpr, (0<<U2X1)
     sts UCSR1A, mpr
 
     ; Enable receive interrupt
     ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
+    ; ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXCIE1)|(1<<TXEN1)
     sts UCSR1B, mpr
 
     ; Set frame format
@@ -151,6 +154,14 @@ INIT:
 	ldi	mpr,	MovFwd
 	out	PORTB,	mpr
 
+	; Zero the freezeCount
+	ldi XL, low(freezeCount)
+	ldi XH, high(freezeCount)
+	ld mpr, X
+	clr mpr
+	st X, mpr
+
+	sei
 
 ;Other
 
@@ -167,6 +178,7 @@ MAIN:
 ;***********************************************************
 
 usartReceive:
+	push waitcnt
 	push mpr
 	push mpr2
 	push XL
@@ -178,7 +190,7 @@ usartReceive:
 	; Read byte
 	ldi XL, low(buffer)
 	ldi XH, high(buffer)
-	ldi mpr, UDR1
+	lds mpr, UDR1
 	
 
 	; Which byte are we expecting?
@@ -193,11 +205,16 @@ action:
 	neg mpr2
 	st Z, mpr2
 
-	;cpi mpr, 0b11111000 ; reserved
-	;breq tag
+	cpi mpr, 0b11111000 ; reserved
+	breq sendFreeze
+
 	out PORTB, mpr
+	jmp usartReceiveCleanup
 
 command:
+	; Check if we got the freeze command
+	cpi mpr, 0b11111000 ; reserved
+	breq tag
 	; If the bytes don't match cleanup and continue waiting for a valid command 
 	; byte.
 	cpi mpr, BotID
@@ -214,35 +231,45 @@ usartReceiveCleanup:
 	pop XL
 	pop mpr2
 	pop mpr
+	pop waitcnt
 	ret
 
-;goForward:
-;	ldi mpr, MovFwd
-;	out PORTB, mpr
-;	jmp usartReceiveCleanup
-;
-;goBackward:
-;	ldi mpr, MovBck
-;	out PORTB, mpr
-;	jmp usartReceiveCleanup
-;
-;goRight:
-;	ldi mpr, TurnR
-;	out PORTB, mpr
-;	jmp usartReceiveCleanup
-;
-;goLeft:
-;	ldi mpr, TurnL
-;	out PORTB, mpr
-;	jmp usartReceiveCleanup
-;
-;haltAndCatchFire:
-;	ldi mpr, Halt
-;	out PORTB, mpr
-;	jmp usartReceiveCleanup
-;
-;tag:
-;	jmp usartReceiveCleanup
+
+tag:
+
+	ldi mpr, Halt
+	out PORTB, mpr
+
+	ldi XL, low(freezeCount)
+	ldi XH, high(freezeCount)
+	ld mpr, X
+	out PORTB, mpr
+
+	; If it has been tagged three times disable interrupts and stop
+	cpi mpr, 3
+	breq shutdown
+	inc mpr
+	st X, mpr
+	; Wait for 250 milliseconds twice for a total of 5 seconds
+	ldi waitcnt, 100
+	;rcall Wait
+	rcall Wait
+	jmp usartReceiveCleanup
+
+sendFreeze:
+
+	sts mpr, UDR1
+	; Immediately read back the freeze byte so we don't accidentally freeze
+	; ourselves!
+	lds mpr, UDR1
+	jmp usartReceiveCleanup
+
+; Disable interrupts and loop forever
+shutdown:
+	;clr mpr
+	;out EIMSK, mpr
+	; disable art interrupts
+	jmp shutdown
 
 HitLeft:
 	; Save registers
