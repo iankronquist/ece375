@@ -221,8 +221,8 @@ sendFreeze:
 
 waitSent:
 	lds mpr, UCSR1A
-	andi mpr, 0x80
-	breq waitSent
+	sbrs mpr, TXC1
+	rjmp waitSent
 	ret
 
 
