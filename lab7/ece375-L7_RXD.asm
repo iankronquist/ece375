@@ -33,9 +33,10 @@
 .equ	EngDirL = 6				; Left Engine Direction Bit
 
 .equ	buffer = $0100
-.equ	whichBit = $1100
 
 .equ	freezeCount = $0120
+
+.equ	whichBit = $0130
 
 .equ	BotID = 42 ;(Enter you group ID here (8bits)); Unique XD ID (MSB = 0)
 
@@ -116,8 +117,7 @@ INIT:
     sts UCSR1A, mpr
 
     ; Enable receive interrupt
-    ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
-    ; ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXCIE1)|(1<<TXEN1)
+    ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)
     sts UCSR1B, mpr
 
     ; Set frame format
@@ -125,7 +125,6 @@ INIT:
 	; 2 stop bits is USBS1, data bits are UCCSZ*
     ldi mpr, (1<<UCSZ10)|(1<<UCSZ11)|(1<<USBS1)|(1<<UPM01)
     sts UCSR1C, mpr
-	
 
 
 	;Enable receiver and enable receive interrupts
@@ -190,8 +189,11 @@ usartReceive:
 	; Read byte
 	ldi XL, low(buffer)
 	ldi XH, high(buffer)
+
 	lds mpr, UDR1
-	
+
+	cpi mpr, 0b01010101 ; The robot was tagged
+	breq tag
 
 	; Which byte are we expecting?
 	ldi ZL, low(whichBit)
@@ -205,16 +207,18 @@ action:
 	neg mpr2
 	st Z, mpr2
 
-	cpi mpr, 0b11111000 ; reserved
+	cpi mpr, 0b11110000 ; reserved
 	breq sendFreeze
 
+	cpi mpr, BotID ; Race condition encountered. Attempt to recover.
+	breq usartReceiveCleanup
+
+	lsr mpr
 	out PORTB, mpr
-	jmp usartReceiveCleanup
+	rjmp usartReceiveCleanup
 
 command:
 	; Check if we got the freeze command
-	cpi mpr, 0b11111000 ; reserved
-	breq tag
 	; If the bytes don't match cleanup and continue waiting for a valid command 
 	; byte.
 	cpi mpr, BotID
@@ -245,7 +249,7 @@ tag:
 	ld mpr, X
 	out PORTB, mpr
 
-	; If it has been tagged three times disable interrupts and stop
+	; If it has been tagged three times enter an infinite loop
 	cpi mpr, 3
 	breq shutdown
 	inc mpr
@@ -254,22 +258,29 @@ tag:
 	ldi waitcnt, 100
 	;rcall Wait
 	rcall Wait
-	jmp usartReceiveCleanup
+	rjmp usartReceiveCleanup
 
 sendFreeze:
-
-	sts mpr, UDR1
-	; Immediately read back the freeze byte so we don't accidentally freeze
-	; ourselves!
+	out PORTB, mpr
+	pollTransmit:
+		lds mpr2, UCSR1A
+		andi mpr2, (1<<TXC1)
+		breq pollTransmit
+	ldi mpr, 0b01010101
+	sts UDR1, mpr
+	; Once the receive flag is set, read back the freeze byte so we don't
+	; accidentally receive our own freeze command
+	pollReceive:
+		lds mpr2, UCSR1A
+		andi mpr2, (1<<RXC1)
+		breq pollReceive
 	lds mpr, UDR1
-	jmp usartReceiveCleanup
+	out PORTB, mpr
+	rjmp usartReceiveCleanup
 
 ; Disable interrupts and loop forever
 shutdown:
-	;clr mpr
-	;out EIMSK, mpr
-	; disable art interrupts
-	jmp shutdown
+	rjmp shutdown
 
 HitLeft:
 	; Save registers

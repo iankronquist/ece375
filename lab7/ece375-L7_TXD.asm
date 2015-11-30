@@ -20,6 +20,9 @@
 ;***********************************************************
 .def	mpr = r16				; Multi-Purpose Register
 
+.def	ilcnt = r18				; Inner Loop Counter
+.def	olcnt = r19				; Outer Loop Counter
+.def	waitcnt = r20			; Wait Loop Counter
 
 ; Use these commands between the remote and TekBot
 ; MSB = 1 thus:
@@ -32,6 +35,8 @@
 .equ	EngDirR = 5				; Right Engine Direction Bit
 .equ	EngDirL = 6				; Left Engine Direction Bit
 
+
+.equ	BotID = 42 ;(Enter you group ID here (8bits)); Unique XD ID (MSB = 0)
 
 .equ	MovFwd =  ($80|1<<(EngDirR-1)|1<<(EngDirL-1))	;0b10110000 Move Forwards Command
 .equ	MovBck =  ($80|$00)								;0b10000000 Move Backwards Command
@@ -49,6 +54,17 @@
 ;-----------------------------------------------------------
 .org	$0000					; Beginning of IVs
 		rjmp 	INIT			; Reset interrupt
+
+;- Left whisker
+.org	$0002					; Beginning of IVs
+		rcall 	sendFreeze
+		reti
+
+;- Right whisker
+.org	$0004					; Beginning of IVs
+		rcall 	HaltAndCatchFire
+		reti
+
 
 
 .org	$0046					; End of Interrupt Vectors
@@ -90,12 +106,12 @@ INIT:
     sts UBRR1L, mpr
     ldi mpr, high(416)
     sts UBRR1H, mpr
-    ldi mpr, (1<<U2X1)
+    ldi mpr, (0<<U2X1)
     sts UCSR1A, mpr
 
-    ; Enable receive interrupt
-    ; ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
-    ; out UCSR1B, mpr
+    ; Enable Transmission
+    ldi mpr, (1<<TXEN1)
+    sts UCSR1B, mpr
 
 	; Set frame format: 8 data bits, 2 stop bits
 	; 2 stop bits is USBS1, data bits are UCCSZ*
@@ -115,9 +131,14 @@ INIT:
 	; Set the External Interrupt Mask
 
 	;Set the External Interrupt Mask
-	; Enable interrupts 2 and 3, External interrupt requests 0 and 1
+	; Enable S1 & S2
 	ldi	mpr, 0x03
 	out	EIMSK, mpr
+
+	clr mpr
+	out PORTB, mpr
+
+	sei
 
 
 	;Other
@@ -127,13 +148,104 @@ INIT:
 ; Main Program
 ;-----------------------------------------------------------
 MAIN:
+	;in mpr, PORTD
+	;out PORTB, mpr
 
-		rjmp	MAIN
+	sbis PIND, 7
+	rjmp forward
+	sbis PIND, 6
+	rjmp backward
+	sbis PIND, 5
+	rjmp turnLeft
+	sbis PIND, 4
+	rjmp turnRight
+	rjmp	MAIN
 
 ;***********************************************************
 ;*	Functions and Subroutines
 ;***********************************************************
 
+sendBotId:
+	ldi mpr, BotID
+	sts UDR1, mpr
+	rcall waitSent
+	ret
+
+forward:
+	rcall sendBotId
+	ldi mpr, MovFwd
+	sts UDR1, mpr
+	out PORTB, mpr
+	rcall waitSent
+	rjmp MAIN
+
+backward:
+	rcall sendBotId
+	ldi mpr, MovBck
+	sts UDR1, mpr
+	out PORTB, mpr
+	rcall waitSent
+	rjmp MAIN
+
+turnLeft:
+	rcall sendBotId
+	ldi mpr, TurnL
+	sts UDR1, mpr
+	out PORTB, mpr
+	rcall waitSent
+	rjmp MAIN
+
+turnRight:
+	rcall sendBotId
+	ldi mpr, TurnR
+	sts UDR1, mpr
+	out PORTB, mpr
+	rcall waitSent
+	rjmp MAIN
+
+HaltAndCatchFire:
+	rcall sendBotId
+	ldi mpr, Halt
+	sts UDR1, mpr
+	out PORTB, mpr
+	rcall waitSent
+	reti
+
+sendFreeze:
+	rcall sendBotId
+	ldi mpr, 0b11110000
+	sts UDR1, mpr
+	out PORTB, mpr
+	rcall waitSent
+	reti
+
+waitSent:
+	lds mpr, UCSR1A
+	andi mpr, 0x80
+	breq waitSent
+	ret
+
+
+; Useful for debugging
+; Shamelessly stolen from lab 1
+Wait:
+		push	waitcnt			; Save wait register
+		push	ilcnt			; Save ilcnt register
+		push	olcnt			; Save olcnt register
+
+Loop:	ldi		olcnt, 224		; load olcnt register
+OLoop:	ldi		ilcnt, 237		; load ilcnt register
+ILoop:	dec		ilcnt			; decrement ilcnt
+		brne	ILoop			; Continue Inner Loop
+		dec		olcnt		; decrement olcnt
+		brne	OLoop			; Continue Outer Loop
+		dec		waitcnt		; Decrement wait 
+		brne	Loop			; Continue Wait loop	
+
+		pop		olcnt		; Restore olcnt register
+		pop		ilcnt		; Restore ilcnt register
+		pop		waitcnt		; Restore wait register
+		ret				; Return from subroutine
 
 
 ;***********************************************************
