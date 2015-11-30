@@ -255,8 +255,8 @@ tag:
 	inc mpr
 	st X, mpr
 	; Wait for 250 milliseconds twice for a total of 5 seconds
-	ldi waitcnt, 100
-	;rcall Wait
+	ldi waitcnt, 250
+	rcall Wait
 	rcall Wait
 	rjmp usartReceiveCleanup
 
@@ -264,16 +264,17 @@ sendFreeze:
 	out PORTB, mpr
 	pollTransmit:
 		lds mpr2, UCSR1A
-		andi mpr2, (1<<TXC1)
-		breq pollTransmit
+		sbrs mpr2, TXC1
+		rjmp pollTransmit
 	ldi mpr, 0b01010101
 	sts UDR1, mpr
+	out PORTB, mpr
 	; Once the receive flag is set, read back the freeze byte so we don't
 	; accidentally receive our own freeze command
 	pollReceive:
 		lds mpr2, UCSR1A
-		andi mpr2, (1<<RXC1)
-		breq pollReceive
+		sbrs mpr2, RXC1
+		rjmp pollReceive
 	lds mpr, UDR1
 	out PORTB, mpr
 	rjmp usartReceiveCleanup
