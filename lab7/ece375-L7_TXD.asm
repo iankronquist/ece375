@@ -123,11 +123,11 @@ INIT:
 	;Set the Interrupt Sense Control to low level detection
 	; Don't use any of the higher interrupts
 	ldi	mpr, 0x0
-	sts	EICRA, mpr
+	out	EICRB, mpr
 
 	; Interrupts 0 and 1 should fire on a falling edge
 	ldi	mpr, 0xa
-	out	EICRB, mpr
+	sts	EICRA, mpr
 	; Set the External Interrupt Mask
 
 	;Set the External Interrupt Mask
@@ -209,7 +209,7 @@ HaltAndCatchFire:
 	sts UDR1, mpr
 	out PORTB, mpr
 	rcall waitSent
-	reti
+	ret
 
 sendFreeze:
 	rcall sendBotId
@@ -217,7 +217,7 @@ sendFreeze:
 	sts UDR1, mpr
 	out PORTB, mpr
 	rcall waitSent
-	reti
+	ret
 
 waitSent:
 	lds mpr, UCSR1A

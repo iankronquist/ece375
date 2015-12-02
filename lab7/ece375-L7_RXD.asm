@@ -127,21 +127,15 @@ INIT:
     sts UCSR1C, mpr
 
 
-	;Enable receiver and enable receive interrupts
-    ; Enable receive interrupt
-    ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
-    sts UCSR1B, mpr
-
-
 	;External Interrupts
 	;Set the Interrupt Sense Control to low level detection
 	; Don't use any of the higher interrupts
 	ldi	mpr, 0x0
-	sts	EICRA, mpr
+	sts	EICRB, mpr
 
 	; Interrupts 0 and 1 should fire on a falling edge
 	ldi	mpr, 0xa
-	out	EICRB, mpr
+	sts	EICRA, mpr
 	; Set the External Interrupt Mask
 
 	;Set the External Interrupt Mask
@@ -204,7 +198,7 @@ usartReceive:
 
 action:
 	; Expect a device byte next
-	neg mpr2
+	com mpr2
 	st Z, mpr2
 
 	cpi mpr, 0b11110000 ; reserved
@@ -224,7 +218,7 @@ command:
 	cpi mpr, BotID
 	brne usartReceiveCleanup
 	; Expect an action byte next
-	neg mpr2
+	com mpr2
 	st Z, mpr2
 	; Fall through to cleanup.
 
