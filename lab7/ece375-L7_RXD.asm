@@ -27,6 +27,8 @@
 
 .equ	freezeCount = $0120
 
+.equ	freezeTag = 0b01010101
+
 .equ	whichBit = $0130
 
 .equ	BotID = 42 ;(Enter you group ID here (8bits)); Unique XD ID (MSB = 0)
@@ -177,7 +179,7 @@ usartReceive:
 
 	lds mpr, UDR1
 
-	cpi mpr, 0b01010101 ; The robot was tagged
+	cpi mpr, freezeTag ; The robot was tagged
 	breq tag
 
 	; Which byte are we expecting?
@@ -206,6 +208,9 @@ command:
 	; Check if we got the freeze command
 	; If the bytes don't match cleanup and continue waiting for a valid command 
 	; byte.
+	out PORTB, mpr
+	;ldi waitcnt, 100
+	;rcall Wait
 	cpi mpr, BotID
 	brne usartReceiveCleanup
 	; Expect an action byte next
@@ -232,12 +237,13 @@ tag:
 	ldi XL, low(freezeCount)
 	ldi XH, high(freezeCount)
 	ld mpr, X
+	inc mpr
 	out PORTB, mpr
+
 
 	; If it has been tagged three times enter an infinite loop
 	cpi mpr, 3
 	breq shutdown
-	inc mpr
 	st X, mpr
 	; Wait for 250 milliseconds twice for a total of 5 seconds
 	ldi waitcnt, 250
@@ -247,11 +253,11 @@ tag:
 
 sendFreeze:
 	out PORTB, mpr
-	pollTransmit:
-		lds mpr2, UCSR1A
-		sbrs mpr2, TXC1
-		rjmp pollTransmit
-	ldi mpr, 0b01010101
+	;pollTransmit:
+	;	lds mpr2, UCSR1A
+	;	sbrs mpr2, TXC1
+	;	rjmp pollTransmit
+	ldi mpr, freezeTag
 	sts UDR1, mpr
 	out PORTB, mpr
 	; Once the receive flag is set, read back the freeze byte so we don't
