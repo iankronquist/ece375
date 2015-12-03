@@ -1,0 +1,92 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{anysize}
+\usepackage{verbatim}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \vspace*{4cm}
+    \begin{flushright}
+    {\huge
+        ECE 375 Lab 7\\[1cm]
+    }
+    {\large
+        Remotely Operated Vehicle
+    }
+    \end{flushright}
+    \begin{flushleft}
+    Lab Time: Monday Noon-2:00pm
+    \end{flushleft}
+    \begin{flushright}
+    Ian Kronquist
+    \vfill
+    \rule{5in}{.5mm}\\
+    TA Signature
+    \end{flushright}
+
+\end{titlepage}
+\section{Introduction}
+In this lab we built a functioning remote control car and controller which could play freeze tag. We used USART to communicate between the controller and the robot as well as between robots.
+
+\begin{enumerate}
+\item There are two parts to this program, a remote control known as the transmitter and a remote control car known as a receiver. The transmitter polls for button presses or responds to interrupts and then dispatches to subroutines which send the appropriate signal to the receiver. The remote control car can respond to signals from the remote and from other cars. The other cars might send the freeze signal, in which case the car freezes for five seconds. After receiving the freeze signal five times the car stops completely. Upon receiving a command from the controller the car will either stop, start, or change direction, or send its own freeze signal to other cars.
+
+\end{enumerate}
+
+\section{Difficulties}
+At one point I accidentally overwrote settings in the UCSR1B register which disabled the transmitter for the remote control car. I should have read my code more carefully. Polling the buttons in the transmitter was somewhat unintuitive and inefficient. There are plenty of opportunities for race conditions in an environment where many robots are sending and receiving a variety of commands and actions.
+
+\section{Conclusion}
+USART communication is relatively easy and powerful. This lab took advantage of the wide variety of techniques we learned in class including interrupts, polling, busy waiting, and USART.
+
+\section{Source Code}
+
+\begin{enumerate}
+\item Transmitter
+\begin{enumerate}
+
+\item Definitions: Define the loop registers and waitcnt register for the wait method. Define two multi purpose registers. Sect constants for the engine directions and the whisker pins. Define the bot ID. Define addresses for the buffers which determine which command to expect and how many times the bot has been frozen.
+\item Interrupts: The first external interrupt triggers the sendFreeze function. The second triggers the HaltAndCatchFire function.
+\item Initialization: Set up the stack pointer. Set Port B for output and Port D for input. Configure USART 1 baud rate with the UBRR1H register. Disable double data rate with the UCSR1A register. Enable the receive interrupt, the receiver, and the transmitter with the UCSR1B register. Set the frame format including stop bits etc. with the UCSR1C register. Enable external interrupts with EIMSK. Set the robot to move forward and zero the freeze count. Enable interrupts and fall through to main.
+\item The main function is a simple loop which polls the top four bits of the Pin D register which are connected to the four leftmost buttons. Since PIND is active low, the loop polls each bit and skips the next instruction if the bit is high. The next instruction is a subroutine which sends a command.
+\item sendBotId: Sends the bot ID and waits until sending finishes before returning.
+\item forward: Calls the sendBotId function and then sends the command to move forward. Waits for the command to be sent and resumes the main polling loop.
+\item backward: Same as forward but sends the backward signal instead.
+\item turnRight: Same as forward but sends the  right signal instead.
+\item turnLeft: Same as forward but sends the left signal instead.
+\item HaltAndCatchFire: Same as forward but send the halt signal instead.
+\item sendFreeze: Same as forward but sends the freeze command instead.
+\item waitSent: Polls the transmit complete bit in a busy wait loop until data is sent, and then return.
+
+\end{enumerate}
+\verbatiminput{ece375-L7_TXD.asm}
+
+\item Receiver
+\begin{enumerate}
+\item Definitions: Define the loop registers and waitcnt register for the wait method. Define two multi purpose registers. Sect constants for the engine directions and the whisker pins. Define the bot ID. Define addresses for the buffers which determine which command to expect and how many times the bot has been frozen.
+
+\item Interrupts: Define interrupts for the left and right whiskers which use the HitLeft and HitRight functions. Define the usartReceive interrupt.
+
+\item Initialization: Set up the stack pointer. Set Port B for output and Port D for input. Configure USART 1 baud rate with the UBRR1H register. Disable double data rate with the UCSR1A register. Enable the receive interrupt, the receiver, and the transmitter with the UCSR1B register. Set the frame format including stop bits etc. with the UCSR1C register. Enable external interrupts with EIMSK. Set the robot to move forward and zero the freeze count. Enable interrupts and fall through to main.
+
+\item Main: Loop infinitely
+
+\item USART Receiver: This function is called by interrupt. It is divided into several sections: general, action, command, cleanup, tag, and send freeze.
+    \begin{enumerate}
+    \item The general section pushes the appropriate registers and loads the address of the buffer into the X register for future use. It reads the data from UDR1 and checks if it is equal to the tag signal. If the robot received the tag signal, it jumps to the tag section. Otherwise it loads the bit which determines which sort of command the robot is expecting. If it is expecting a command, it jumps to the command bit. If it is expecting an action it falls through to the action.
+    \item The action section flips the variable which determines what sort of message it will receive next and writes it back to memory. If the robot receives the freeze signal, it will jump to the sendFreeze subroutine. The other signals are the motor control bits shifted slightly. If it receives one of these other signals, then it right shifts the signal and writes it to port B. Finally control transfers to the cleanup subroutine.
+    \item The command section checks whether the message which was received is the same as the bot ID. If it is not it executes the cleanup subroutine. Next, it complements the value of the variable to expect an action signal next. Finally it falls through to the cleanup subroutine.
+    \item The cleanup subroutine pops all the registers and returns.
+    \item The tag subroutine halts the robot, increments the freeze counter, and if the robot has been frozen three times it jumps to an infinite loop. Otherwise, the robot waits for 5 seconds and transfers to the receive subroutine.
+    \item The sendFreeze subroutine first polls to check whether the transmitter is busy. Once it is free it sends the freeze signal. Then it busy waits until it has finished sending and writes the signal reads the signal it just sent. Finally it jumps to the cleanup subroutine.
+    \item The HitLeft, HitRight, and Wait subroutines are the same as previous assignments.
+    \end{enumerate}
+\end{enumerate}
+\verbatiminput{ece375-L7_RXD.asm}
+
+\end{enumerate}
+\end{document}
+
+\end{document}
