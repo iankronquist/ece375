@@ -1,15 +1,6 @@
 ;***********************************************************
 ;*
-;*	Enter Name of file here
-;*
-;*	Enter the description of the program here
-;*
 ;*	This is the TRANSMIT skeleton file for Lab 7 of ECE 375
-;*
-;***********************************************************
-;*
-;*	 Author: Enter your name
-;*	   Date: Enter Date
 ;*
 ;***********************************************************
 
@@ -44,6 +35,8 @@
 .equ	TurnL =   ($80|1<<(EngDirR-1))					;0b10010000 Turn Left Command
 .equ	Halt =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Command
 .equ	Freez =   ($80|$F8)
+
+
 ;***********************************************************
 ;*	Start of Code Segment
 ;***********************************************************
@@ -246,14 +239,3 @@ ILoop:	dec		ilcnt			; decrement ilcnt
 		pop		ilcnt		; Restore ilcnt register
 		pop		waitcnt		; Restore wait register
 		ret				; Return from subroutine
-
-
-;***********************************************************
-;*	Stored Program Data
-;***********************************************************
-
-
-
-;***********************************************************
-;*	Additional Program Includes
-;***********************************************************

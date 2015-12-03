@@ -1,15 +1,6 @@
 ;***********************************************************
 ;*
-;*	Enter Name of file here
-;*
-;*	Enter the description of the program here
-;*
 ;*	This is the RECEIVE skeleton file for Lab 7 of ECE 375
-;*
-;***********************************************************
-;*
-;*	 Author: Enter your name
-;*	   Date: Enter Date
 ;*
 ;***********************************************************
 
@@ -108,7 +99,7 @@ INIT:
 
 	;USART1
 	;Set baudrate at 2400bps
-    ; Set the baud rate and enable double data rate
+    ; Set the baud rate
     ldi mpr, low(416)
     sts UBRR1L, mpr
     ldi mpr, high(416)
@@ -350,14 +341,3 @@ ILoop:	dec		ilcnt			; decrement ilcnt
 		pop		ilcnt		; Restore ilcnt register
 		pop		waitcnt		; Restore wait register
 		ret				; Return from subroutine
-
-;***********************************************************
-;*	Stored Program Data
-;***********************************************************
-
-
-
-;***********************************************************
-;*	Additional Program Includes
-;***********************************************************
-
