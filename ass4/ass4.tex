@@ -1,0 +1,234 @@
+% template created by: Russell Haering. arr. Joseph Crop
+\documentclass[12pt,letterpaper]{article}
+\usepackage{enumerate}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{flushright}
+{\large
+ECE 375 Assignment 4\\
+Ian Kronquist
+}
+\end{flushright}
+
+\bigskip
+
+\begin{enumerate}
+    \item LD Rd, X+
+    \begin{enumerate}
+        \item Micro-operations \\
+        \begin{enumerate}[i]
+            \item DMAR $\leftarrow$ X, X $\leftarrow$ X+1
+            \item M(DMAR) $\leftarrow$ Rd
+        \end{enumerate}
+
+        \item Control Signals\\
+            \begin{tabular}{l l l}
+                 Control Signals & EX1 & EX2 \\
+                 \hline
+                 MJ & x & x \\
+                 MK & x & x \\
+                 ML & x & x \\
+                 IR\_en & 0 & x \\
+                 PC\_en & 0 & 0 \\
+                 PCh\_en & 0 & 0 \\
+                 PCl\_en & 0 & 0 \\
+                 NPC\_en & x & x \\
+                 SP\_en & 0 & 0 \\
+                 DEMUX & x & x \\
+                 MA & x & x \\
+                 MB & x & 1 \\
+                 ALU\_f & xxxx & xxxx \\
+                 MC & 01 & 00 \\
+                 RF\_wa & 1 & 0 \\
+                 RF\_wb & 1 & 1 \\
+                 MD & x & x \\
+                 ME & x & 1 \\
+                 DM\_r & x & 1 \\
+                 DM\_w & 0 & 0 \\
+                 MF & x & x \\
+                 MG & 1 & x \\
+                 Adder\_f & 01 & xx \\
+                 Inc\_Dec & x & x \\
+                 MH & 0 & x \\
+                 MI & x & x \\
+            \end{tabular}
+
+        \item RAL Output\\
+            \begin{tabular}{l l l}
+                 RAL output & EX1 & EX2 \\
+                 \hline
+                 wA & XH & x  \\
+                 wB & XL & Rd\\
+                 rA & XH & x \\
+                 rB & XL & x \\
+            \end{tabular}
+    \end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \item POP Rd
+    \begin{enumerate}
+        \item Micro-operations \\
+            \begin{enumerate}[i]
+                \item SP $\leftarrow$ SP+1
+                \item Rd $\leftarrow$ M(SP)
+            \end{enumerate}
+
+        \item Control Signals\\
+            \begin{tabular}{l l l}
+                 Control Signals & EX1 & EX2 \\
+                 \hline
+                 MJ & x & x \\
+                 MK & x & x \\
+                 ML & x & x \\
+                 IR\_en & 0 & x \\
+                 PC\_en & 0 & 0 \\
+                 PCh\_en & 0 & 0 \\
+                 PCl\_en & 0 & 0 \\
+                 NPC\_en & x & x \\
+                 SP\_en & 1 & 0 \\
+                 DEMUX & x & x \\
+                 MA & x & x \\
+                 MB & x & 1 \\
+                 ALU\_f & x & x \\
+                 MC & xx & 00 \\
+                 RF\_wa & 0 & 0 \\
+                 RF\_wb & 0 & 1 \\
+                 MD & x & x \\
+                 ME & x & 0 \\
+                 DM\_r & x & 1 \\
+                 DM\_w & 0 & 0 \\
+                 MF & x & x \\
+                 MG & x & x \\
+                 Adder\_f & xx & xx \\
+                 Inc\_Dec & 0 & x \\
+                 MH & x & x \\
+                 MI & x & x \\
+            \end{tabular}
+
+        \item RAL Output\\
+            \begin{tabular}{l l l}
+                 RAL output & EX1 & EX2 \\
+                 \hline
+                 wA & x & x \\
+                 wB & x & Rd \\
+                 rA & x & x \\
+                 rB & x & x \\
+            \end{tabular}
+        \end{enumerate}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \item RCALL K
+    \begin{enumerate}
+        \item Micro-operations \\
+        \begin{enumerate}[i]
+            \item M(SP) $\leftarrow$ RARl, PC $\leftarrow$ NPC + K, SP $\leftarrow$ SP-1
+            \item M(SP) $\leftarrow$ RARh, SP $\leftarrow$ SP-1
+        \end{enumerate}
+
+        \item Control Signals\\
+            \begin{tabular}{l l l}
+                 Control Signals & EX1 & EX2 \\
+                 \hline
+                 MJ & 1 & x \\
+                 MK & x & x \\
+                 ML & x & x \\
+                 IR\_en & 0 & x \\
+                 PC\_en & 1 & 0 \\
+                 PCh\_en & 0 & 0 \\
+                 PCl\_en & 0 & 0 \\
+                 NPC\_en & x & x \\
+                 SP\_en & 1 & 1 \\
+                 DEMUX & x & x \\
+                 MA & x & x \\
+                 MB & x & x \\
+                 ALU\_f & xx & xx \\
+                 MC & xx & xx \\
+                 RF\_wa & 0 & 0 \\
+                 RF\_wb & 0 & 0 \\
+                 MD & 0 & 0 \\
+                 ME & 0 & 0 \\
+                 DM\_r & 0 & 0 \\
+                 DM\_w & 1 & 1 \\
+                 MF & 0 & 0 \\
+                 MG & 0 & 0 \\
+                 Adder\_f & 00 & xx \\
+                 Inc\_Dec & 1 & 1 \\
+                 MH & x & x \\
+                 MI & 0 & 1 \\
+            \end{tabular}
+
+        \item RAL Output\\
+            \begin{tabular}{l l l}
+                 RAL output & EX1 & EX2 \\
+                 \hline
+                 wA & x & x \\
+                 wB & x & x \\
+                 rA & x & x \\
+                 rB & x & x \\
+            \end{tabular}
+    \end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \item LPM
+    \begin{enumerate}
+        \item Micro-operations \\
+            \begin{enumerate}[i]
+                \item PMAR $\leftarrow$ Z
+                \item MDR $\leftarrow$ PM(PMAR)
+                \item R0 $\leftarrow$ MDR
+            \end{enumerate}
+        \item Control Signals\\
+            \begin{tabular}{l l l l}
+                 Control Signals & EX1 & EX2 & EX3\\
+                 \hline
+                 MJ & x & x & x \\
+                 MK & x & x & x \\
+                 ML & x & 1 & x \\
+                 IR\_en & 0 & 0 & x \\
+                 PC\_en & 0 & 0 & 0 \\
+                 PCh\_en & 0 & 0 & 0\\
+                 PCl\_en & 0 & 0 & 0\\
+                 NPC\_en & x & x & x\\
+                 SP\_en & 0 & 0 & 0\\
+                 DEMUX & x & x & x \\
+                 MA & x & x & x \\
+                 MB & x & x & x \\
+                 ALU\_f & x & x & x \\
+                 MC & xx & xx & 10 \\
+                 RF\_wa & 0 & 0 & 0 \\
+                 RF\_wb & 0 & 0 & 1 \\
+                 MD & x & x & x \\
+                 ME & x & x & x \\
+                 DM\_r & x & x & x \\
+                 DM\_w & 0 & 0 & 0 \\
+                 MF & x & x & x \\
+                 MG & 1 & x & x \\
+                 Adder\_f & 11 & xx & xx \\
+                 Inc\_Dec & x & x & x \\
+                 MH & x & x & x \\
+                 MI & x & x & x \\
+            \end{tabular}
+
+        \item RAL Output\\
+            \begin{tabular}{l l l l}
+                 RAL output & EX1 & EX2 & EX3 \\
+                 \hline
+                 wA & x & x & x \\
+                 wB & x & x & R0 \\
+                 rA & ZH & x & x \\
+                 rB & ZL & x & x \\
+            \end{tabular}
+
+    \end{enumerate}
+
+\end{enumerate}
+\end{document}
