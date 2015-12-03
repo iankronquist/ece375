@@ -20,7 +20,7 @@ Ian Kronquist
     \begin{enumerate}
         \item Micro-operations \\
         \begin{enumerate}[i]
-            \item DMAR $\leftarrow$ X, X $\leftarrow$ X+1
+            \item DMAR $\leftarrow$ AR, AR $\leftarrow$ AR+1
             \item M(DMAR) $\leftarrow$ Rd
         \end{enumerate}
 
@@ -60,10 +60,10 @@ Ian Kronquist
             \begin{tabular}{l l l}
                  RAL output & EX1 & EX2 \\
                  \hline
-                 wA & XH & x  \\
-                 wB & XL & Rd\\
-                 rA & XH & x \\
-                 rB & XL & x \\
+                 wA & ARH & x  \\
+                 wB & ARL & Rd\\
+                 rA & ARH & x \\
+                 rB & ARL & x \\
             \end{tabular}
     \end{enumerate}
 
