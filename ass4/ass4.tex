@@ -18,13 +18,14 @@ Ian Kronquist
 \begin{enumerate}
     \item LD Rd, X+
     \begin{enumerate}
-        \item Micro-operations \\
+        \item Micro-operations. First move the contents of the address register (AR), which is one of X, Y, or Z, to the DMAR so the corresponding value in memory can be read. At the same time, increment the AR register with the Address Incrementer. The value of AR will not be updated until the next clock cycle, so this will not interfere with the original value of AR. Next, Read the value in the DMAR, which came from the address register, into the Rd register. \\
         \begin{enumerate}[i]
             \item DMAR $\leftarrow$ AR, AR $\leftarrow$ AR+1
-            \item M(DMAR) $\leftarrow$ Rd
+            \item Rd $\leftarrow$ M(DMAR)
         \end{enumerate}
 
-        \item Control Signals\\
+        \item Control Signals. First, disable signals which control crucial state, such as the stack pointer, program counter, and data memory. This does not include NPC since that will be overwritten next fetch cycle in any case. Then, set MC to 01 to get the signal coming from the address adder which is the incremented pointer. Set RF\_wa and RF\_wb to 1 so that the signals coming from the address adder which contain the incremented pointer will be written to the Address Register. Set MG to 1 to select the signal coming from the AR in the register file and let it flow through the address adder. Set the Adder\_f signal to 01 to increment the address. Set MH to 0 to allow the original value of the AR to be sent directly to the AR.\\
+        Next comes the second execute phase. Set the IR enable bit to don't care so we can parallelize this stage with the instruction fetch. Set MB to 1 so the data out signal from data memory can flow into MUXC, which is set to the 00 state to allow the contents of the memory location to pass into the Rd register. Set RF\_wa to zero because it isn't used and RF\_wb to 1 to write the 8 bit Rd value to the destination register.\\
             \begin{tabular}{l l l}
                  Control Signals & EX1 & EX2 \\
                  \hline
@@ -56,7 +57,7 @@ Ian Kronquist
                  MI & x & x \\
             \end{tabular}
 
-        \item RAL Output\\
+        \item RAL Output. The first execution cycle reads from the address register and writes back the incremented value. The second cycle only writes to the destination Rd register.\\
             \begin{tabular}{l l l}
                  RAL output & EX1 & EX2 \\
                  \hline
@@ -71,13 +72,14 @@ Ian Kronquist
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \item POP Rd
     \begin{enumerate}
-        \item Micro-operations \\
+        \item Micro-operations. First increment the stack pointer, and remember that the stack grows up, so increasing the value brings the top of the stack closer to the base. Remember the stack pointer always points one location above the current location on the stack. Next, read from the address pointed to by new stack pointer value (which is actually on the stack), into the Rd register.\\
             \begin{enumerate}[i]
                 \item SP $\leftarrow$ SP+1
                 \item Rd $\leftarrow$ M(SP)
             \end{enumerate}
 
-        \item Control Signals\\
+        \item Control Signals. In the first cycle set IR enable to zero as usual, so that junk values do not confuse the control unit during the second cycle. Do not touch the program counter or related machinery. Enable the stack pointer so it can be incremented. Set the Inc\_Dec signal so the stack pointer can be can be incremented and written back.\\
+        In the second cycle, set IR to don't care, as usual, so this cycle can happen at the same time as the fetch cycle for the next instruction. Set MF to one so the contents of data out from data memory will be sent to MUXC, where the MC line will be set to 00 to pass the contents from the top of the stack to inB. Set RF\_wB to 1 so that this value will be written to the destination register. Set RF\_wA to 0 because we are only reading an 8 bit value from memory. Set the DM\_r value to 1 so that we can read the value from memory. Set ME to 0 to read from the value pointed to by the stack pointer. Since the stack pointer is disabled this cycle we don't care about the value of the Inc\_Dec control line.\\
             \begin{tabular}{l l l}
                  Control Signals & EX1 & EX2 \\
                  \hline
@@ -126,13 +128,14 @@ Ian Kronquist
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \item RCALL K
     \begin{enumerate}
-        \item Micro-operations \\
+        \item Micro-operations. Since the program counter is a 16 bit value and data memory is arranged in 8 byte words, we will need to write to the stack in two parts and decrement the stack pointer twice. Since the stack grows from high to low we decrement the stack pointer. In the first cycle we also load the value of the NPC added to the constant from the expression into the program counter.\\
         \begin{enumerate}[i]
             \item M(SP) $\leftarrow$ RARl, PC $\leftarrow$ NPC + K, SP $\leftarrow$ SP-1
             \item M(SP) $\leftarrow$ RARh, SP $\leftarrow$ SP-1
         \end{enumerate}
 
-        \item Control Signals\\
+        \item Control Signals. For the first cycle, set MJ to 1 to allow the value of the PC to be overwritten. Accordingly, set PC\_en to 1. Enable the stack pointer, and set the Inc\_Dec line to 1 to decrement. Set MI to 0 to select the low bits of RAR. Set MD to 0 and DM\_w to 1 to allow those bits to be written to memory. Set ME to 0 to pull from the stack pointer. Set MF and MG both to 0 and Adder\_f to 00 so that we can add NPC and the sign extended constant K together.\\
+        The second cycle is very similar to the first. Since we are not overwriting PC or using the address adder, MJ, MF, MG, and Adder\_f all to don't care. Set MI to 1 to pull from the high bits of the RAR.\\
             \begin{tabular}{l l l}
                  Control Signals & EX1 & EX2 \\
                  \hline
@@ -164,7 +167,7 @@ Ian Kronquist
                  MI & 0 & 1 \\
             \end{tabular}
 
-        \item RAL Output\\
+        \item RAL Output. No registers are read from or written to.\\
             \begin{tabular}{l l l}
                  RAL output & EX1 & EX2 \\
                  \hline
@@ -180,13 +183,15 @@ Ian Kronquist
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \item LPM
     \begin{enumerate}
-        \item Micro-operations \\
+        \item Micro-operations. This instruction has three simple steps. First, load the contents of the Z register to PMAR. Then read the contents of program memory into the MDR. Then load the contents of MDR into R0. Since PMAR and MDR are both registers, they will not become transparent to their new values until the clock cycles, one must happen before the memory read, and the other afterwards. The instruction will take three clock cycles.\\
             \begin{enumerate}[i]
                 \item PMAR $\leftarrow$ Z
                 \item MDR $\leftarrow$ PM(PMAR)
                 \item R0 $\leftarrow$ MDR
             \end{enumerate}
-        \item Control Signals\\
+        \item Control Signals. For the first cycle set IR\_en to 0 so that new data from program memory does not interfere with the control unit's operation. Set MG to 1 to read from the register file, and the Adder\_f to 11 to allow the contents to pass directly through to the PMAR.\\
+        For the second cycle, set ML to 1 so program memory gets the address in PMAR. Disable IR so that the control unit does not receive the new value from program memory. The value from program memory will be directly passed to DMAR. Don't set any other bits.\\
+        For the third cycle, set RF\_wA to 1 to allow the MDR to write to the R0 register. Set MC to 10 to select the bits from the MDR. Remember the LPM instruction only reads 1 byte from program memory. In this step the IR\_en line can be ignored to allow parallelization with the next fetch cycle.\\
             \begin{tabular}{l l l l}
                  Control Signals & EX1 & EX2 & EX3\\
                  \hline
@@ -218,7 +223,7 @@ Ian Kronquist
                  MI & x & x & x \\
             \end{tabular}
 
-        \item RAL Output\\
+        \item RAL Output. The first cycle reads from the Z register's two halves. The final cycle only writes one byte to R0 via write port B.\\
             \begin{tabular}{l l l l}
                  RAL output & EX1 & EX2 & EX3 \\
                  \hline
